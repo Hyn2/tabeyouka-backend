@@ -19,6 +19,8 @@ return new class extends Migration
             $table->text('address')->nullable();
             $table->string('menu_type')->nullable();
             $table->string('phone_number')->nullable();
+            $table->integer('total_points')->default(0);
+            $table->integer('total_votes')->default(0);
             $table->timestamps();
         });
     }
