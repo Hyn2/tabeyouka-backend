@@ -13,7 +13,9 @@ class Restaurant extends Model
         'title',
         'address',
         'menu_type',
-        'phone_number'
+        'phone_number',
+        'total_points',
+        'total_votes',
     ];
 
     public static function createTable()
@@ -24,6 +26,8 @@ class Restaurant extends Model
             $table->string('address');
             $table->string('menu_type');
             $table->string('phone_number');
+            $table->integer('total_points');
+            $table->integer('total_votes');
             $table->timestamps();
         });
     }
