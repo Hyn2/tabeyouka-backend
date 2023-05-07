@@ -17,4 +17,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/restaurants', 'RestaurantController@index');
+Route::get('/restaurants', [RestaurantController::class, 'index']);
+Route::get('/restaurants/{id}', [RestaurantController::class, 'getStoreById']);
