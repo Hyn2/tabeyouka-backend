@@ -39,7 +39,6 @@ class UserController extends Controller
         $validated = $request->validate([
             'email' => 'required',
             'password' => 'required',
-            'nickname' => 'required',
         ]);
 
         if (auth()->attempt($validated)) {
