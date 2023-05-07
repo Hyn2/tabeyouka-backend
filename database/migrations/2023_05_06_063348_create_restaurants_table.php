@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('restaurants', function (Blueprint $table) {
-            $table->id();
+            $table->unsignedBigInteger('id');
             $table->string('title')->default('')->nullable(false);
             $table->text('address')->nullable();
             $table->string('menu_type')->nullable();
