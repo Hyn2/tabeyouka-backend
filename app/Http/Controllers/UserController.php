@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -10,14 +12,21 @@ class UserController extends Controller
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'email' => 'required|unique:users, email',
+            'email' => 'required|unique:users,email',
             'password' => 'required|min:6',
-            'nickname' => 'required',
+            'nickname' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('users')->where(function ($query) use ($request) {
+                    return $query->where('nickname', $request->nickname);
+                })->message('Nickname already taken.'),
+            ],
         ]);
 
         $user = new User();
         $user->email = $validated['email'];
-        $user->password = $bcrypt($validated['password']);
+        $user->password = bcrypt($validated['password']);
         $user->nickname = $validated['nickname'];
         $user->save();
 
