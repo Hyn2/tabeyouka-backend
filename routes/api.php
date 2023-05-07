@@ -2,18 +2,19 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\RestaurantController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+// Register User
+Route::post('/register', [UserController::class, 'register']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Login User
+Route::post('/login', [UserController::class, 'login']);
+
+// Logout User
+// the auth:sanctum middleware is added to the /logout route to ensure that the user is authenticated before being able to log out.
+Route::middleware('auth:sanctum')->post('/logout', [UserController::class, 'logout']);
+
+Route::get('/restaurants', [RestaurantController::class, 'index']);
+
+Route::get('/restaurants/{id}', [RestaurantController::class, 'getStoreById']);
