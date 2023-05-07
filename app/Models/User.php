@@ -9,4 +9,12 @@ use Illuminate\Database\Eloquent\Model;
 class User extends Model implements Authenticatable
 {
     use HasFactory, \Illuminate\Auth\Authenticatable;
+
+    protected $table = 'users';
+
+    protected $fillable = [
+        'email',
+        'password',
+        'nickname',
+    ];
 }
