@@ -17,18 +17,4 @@ class Restaurant extends Model
         'total_points',
         'total_votes',
     ];
-
-    public static function createTable()
-    {
-        Schema::create('restaurants', function ($table) {
-            $table->id();
-            $table->string('title');
-            $table->string('address');
-            $table->string('menu_type');
-            $table->string('phone_number');
-            $table->integer('total_points');
-            $table->integer('total_votes');
-            $table->timestamps();
-        });
-    }
 }
