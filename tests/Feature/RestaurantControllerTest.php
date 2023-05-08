@@ -38,7 +38,7 @@ class RestaurantControllerTest extends TestCase
                 'total_points',
                 'total_votes',
               ]
-              ]);
+            ]);
   }
 
   /** @test */
