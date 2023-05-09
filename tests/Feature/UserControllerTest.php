@@ -20,9 +20,6 @@ class UserControllerTest extends TestCase
     public function setUp():void
     {
       parent::setUp();
-      // $this->artisan('migrate:fresh', [
-      //   '--path' => 'database/migrations',
-      // ]);
       $this->artisan('migrate');
       $this->artisan('passport:install');
 
