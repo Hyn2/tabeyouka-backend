@@ -10,7 +10,7 @@
 ## 설치 및 설정
 1. 레포지토리를 복제합니다.
   ```git
-  git clone https://github.com/your_username/fukuoka-restaurant-crawler-backend.git
+  git clone https://github.com/project-TEAM-5/team-5-backend.git
   ```
 
 2. 프로젝트 디렉토리로 이동합니다.
