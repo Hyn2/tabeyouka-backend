@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\Models\User;
 
 /**
  * In this example, we're using Laravel's testing tools to write three different test cases:
@@ -15,11 +16,27 @@ use Tests\TestCase;
 class UserControllerTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
+    
+    public function setUp():void
+    {
+      parent::setUp();
+      // $this->artisan('migrate:fresh', [
+      //   '--path' => 'database/migrations',
+      // ]);
+      $this->artisan('migrate');
+      $this->artisan('passport:install');
+
+      User::create([
+        'email' => 'test@example.com',
+        'nickname' => 'test-nickname',
+        'password' => bcrypt('password'),
+      ]);
+    }
 
     /** @test */
-    public function it_can_register_a_new_user()
+    public function test_can_register_a_new_user()
     {
-      $email = $this-faker->unique()->safeEmail();
+      $email = $this->faker->unique()->safeEmail();
       $nickname = $this->faker->unique()->userName();
       $password = 'password';
 
@@ -35,9 +52,13 @@ class UserControllerTest extends TestCase
     }
 
     /** @test */
-    public function it_can_login_a_registered_user()
+    public function test_can_login_a_registered_user()
     {
-      $user = factory(User::class)->create(['password' => bcrypt('password')]);
+      // Laravel 8 이상에서는 더 이상 factory() 함수를 사용하지 않습니다.
+      // $user = factory(User::class)->create(['password' => bcrypt('password')]);
+      $user = User::factory()->create([
+        'password' => bcrypt('password')
+      ]);
 
       $response = $this->postJson('/api/login', [
         'email' => $user->email,
@@ -50,9 +71,9 @@ class UserControllerTest extends TestCase
     }
 
     /** @test */
-    public function it_can_logout_a_logged_in_user()
+    public function test_can_logout_a_logged_in_user()
     {
-      $user = factory(User::class)->create();
+      $user = User::where('email', 'test@example.com')->first();
       $token = $user->createToken('auth_token')->plainTextToken;
 
       $response = $this->withHeaders(['Authorization' => "Bearer $token"])
@@ -61,5 +82,12 @@ class UserControllerTest extends TestCase
       $response->assertSuccessful();
       $response->assertJson(['message' => 'User logged out successfully']);
       $this->assertDatabaseMissing('personal_access_tokens', ['tokenable_id' => $user->id]);
+    }
+
+    // 테스트 진행 전의 세팅과 이후의 정리를 지속적으로 수행
+    public function tearDown():void
+    {
+      Artisan::call('migrate:rollback'); // 각 테스트 실행 후 롤백
+      parent::tearDown();
     }
 }

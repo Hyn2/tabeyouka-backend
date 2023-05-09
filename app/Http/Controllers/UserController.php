@@ -12,16 +12,9 @@ class UserController extends Controller
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'email' => 'required|unique:users,email',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
-            'nickname' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique('users')->where(function ($query) use ($request) {
-                    return $query->where('nickname', $request->nickname);
-                })->message('Nickname already taken.'),
-            ],
+            'nickname' => 'required|unique:users,nickname',
         ]);
 
         $user = new User();
