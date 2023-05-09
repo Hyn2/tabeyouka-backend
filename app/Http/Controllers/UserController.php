@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -10,14 +12,14 @@ class UserController extends Controller
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'email' => 'required|unique:users, email',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
-            'nickname' => 'required',
+            'nickname' => 'required|unique:users,nickname',
         ]);
 
         $user = new User();
         $user->email = $validated['email'];
-        $user->password = $bcrypt($validated['password']);
+        $user->password = bcrypt($validated['password']);
         $user->nickname = $validated['nickname'];
         $user->save();
 

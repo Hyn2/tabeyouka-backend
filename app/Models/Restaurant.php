@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 
 class Restaurant extends Model
 {
+    use HasFactory;
+
     protected $table = 'restaurants';
 
     protected $fillable = [
@@ -18,17 +21,8 @@ class Restaurant extends Model
         'total_votes',
     ];
 
-    public static function createTable()
+    public function reviews()
     {
-        Schema::create('restaurants', function ($table) {
-            $table->id();
-            $table->string('title');
-            $table->string('address');
-            $table->string('menu_type');
-            $table->string('phone_number');
-            $table->integer('total_points');
-            $table->integer('total_votes');
-            $table->timestamps();
-        });
+        return $this->hasMany('App\Models\Review');
     }
 }
