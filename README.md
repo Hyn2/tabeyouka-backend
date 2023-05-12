@@ -49,9 +49,9 @@
   ```
 
 8. 특정 시간 간격으로 데이터를 크롤링하기 위해 Laravel 스케쥴러를 설정합니다.
-```
-* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
-```
+  ```
+  cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
+  ```
 
 9. 지금까지의 설정을 저장한 뒤, 서버를 실행합니다.
   ```
