@@ -13,7 +13,7 @@ class RestaurantController extends Controller
 
         return response()->json($restaurants->map(function ($restaurant) {
             return [
-                'name' => $restaurant->name,
+                'title' => $restaurant->title,
                 'address' => $restaurant->address,
                 'menu_type' => $restaurant->menu_type,
                 'phone_number' => $restaurant->phone_number,
