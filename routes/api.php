@@ -22,4 +22,8 @@ Route::get('/restaurants/{id}', [RestaurantController::class, 'getStoreById']);
 
 // Add Review
 Route::post('/addreview/{request}', [ReviewController::class, 'addReview']);
+// Delete Review
 Route::delete('/deletereview/{id}', [ReviewController::class, 'deleteReview']);
+// Get Review(for edit)
+Route::get('/getreview/{id}', [ReviewController::class, 'getReviewById']);
+// Edit Review

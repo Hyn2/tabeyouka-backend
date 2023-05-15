@@ -58,10 +58,28 @@ class ReviewController extends Controller
         return response()->json(['message' => 'Review not found'], 404);
     }
 
-    // 2. 리뷰 삭제
+    // 2. 리뷰 삭제 실행
     $review->delete();
     // 데이터베이스에 해당 값이 삭제되었는지 확인
     // 3. 성공 응답 반환
     return response()->json(['message' => 'Review deleted successfully']);
+    }
+
+    public function getReviewById($id) 
+    {
+        // Review:: 는 Review 모델에 대한 정적인 호출을 의미
+        // 해당하는 필드의 아이디 값이 일치하는지 확인한 후 첫 번째로 일치하는 식당을 반환 or 404
+        $review = Review::select('id', 'author_id', 'restaurant_id', 
+                                 'rating', 'review_text', 'image_file')
+                        ->where('id', $id)
+                        ->firstOrFail();
+        // 행의 author_id 값을 받음
+        $authorId = $review -> author_id;
+        // 현재 사용자의 id값을 받아 비교
+        if(!($authorId == Auth::id())) {
+            return response()->json(['message' => 'id is not correct'], 404);
+        }
+        // 일치하면 반환
+        return response()->json(['review' => $review]);
     }
 }

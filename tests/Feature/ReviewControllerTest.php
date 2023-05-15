@@ -63,4 +63,24 @@ class ReviewControllerTest extends TestCase
     $response->assertStatus(200)
             ->assertJson(['message' => 'Review deleted successfully']);
   }
+  /** @test */
+  public function test_get_review_successfully()
+  {
+    // Arrange
+    $review = Review::factory()->create();
+    // Act
+    $response = $this->getJson("/api/getreview/{$review->id}");
+    // Assert
+    $response->assertStatus(200)
+             ->assertJson([
+              'review' => [
+                'id' => $review->id,
+                'author_id' => $review->author_id,
+                'restaurant_id' => $review->restaurant_id,
+                'rating' => $review->rating,
+                'review_text' => $review->review_text,
+                'image_file' => $review->image_file,
+              ],
+            ]);
+  }
 }
