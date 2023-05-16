@@ -6,7 +6,6 @@ use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-// Hyn2's part
 class ReviewController extends Controller
 {
     // 리뷰 추가
