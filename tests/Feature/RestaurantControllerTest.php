@@ -28,7 +28,7 @@ class RestaurantControllerTest extends TestCase
             ->assertJsonCount(3)
             ->assertJsonStructure([
               '*' => [
-                'name',
+                'title',
                 'address',
                 'menu_type',
                 'phone_number',
