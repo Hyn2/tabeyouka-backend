@@ -8,7 +8,6 @@ use App\Models\Review;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 
-// Hyn2's part
 class ReviewControllerTest extends TestCase
 {
 
