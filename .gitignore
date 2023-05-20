@@ -21,3 +21,5 @@ yarn-error.log
 restaurant_data.txt
 *.pem
 Dockerfile
+docker-compose.yml
+000-default.conf
