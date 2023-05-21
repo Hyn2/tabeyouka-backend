@@ -5,19 +5,18 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\TeammatesController;
 
 // Register User
 Route::post('/register', [UserController::class, 'register']);
-
 // Login User
 Route::post('/login', [UserController::class, 'login']);
-
 // Logout User
-// the auth:sanctum middleware is added to the /logout route to ensure that the user is authenticated before being able to log out.
-Route::middleware('auth:sanctum')->post('/logout', [UserController::class, 'logout']);
+Route::middleware('auth:sanctum')->post('/logout', [UserController::class, 'logout']);  // the auth:sanctum middleware is added to the /logout route to ensure that the user is authenticated before being able to log out.
 
+// Get Entire List of Restaurants
 Route::get('/restaurants', [RestaurantController::class, 'index']);
-
+// Get Specific Restaurant
 Route::get('/restaurants/{id}', [RestaurantController::class, 'getStoreById']);
 
 // Add Review
@@ -28,3 +27,6 @@ Route::delete('/review/{id}', [ReviewController::class, 'deleteReview']);
 Route::get('/review/{id}', [ReviewController::class, 'getReviewById']);
 // Edit Review
 Route::put('/review/{request}', [ReviewController::class, 'editReview']);
+
+// Get teammates
+Route::get('teammates', [TeammatesController::class, 'index']);
