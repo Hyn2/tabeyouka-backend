@@ -27,3 +27,4 @@ Route::delete('/review/{id}', [ReviewController::class, 'deleteReview']);
 // Get Review(for edit)
 Route::get('/review/{id}', [ReviewController::class, 'getReviewById']);
 // Edit Review
+Route::put('/review/{request}', [ReviewController::class, 'editReview']);
