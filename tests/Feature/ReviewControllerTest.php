@@ -105,7 +105,7 @@ class ReviewControllerTest extends TestCase
 
     // 테스트할 리뷰 수정 요청
     $response = $this->actingAs($user)
-    ->postJson("/api/editreview/{request}", $data);
+    ->putJson("/api/review/{request}", $data);
 
 
     // 응답 상태 코드 확인
