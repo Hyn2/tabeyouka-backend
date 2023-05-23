@@ -36,7 +36,7 @@ class ReviewControllerTest extends TestCase
     // Act
     // actingAs() 메서드를 사용하여 특정사용자로 로그인한 상태를 시뮬레이션 할 수 있음
     $response = $this->actingAs($user)
-      ->postJson("/api/review/{request}", $data);
+      ->postJson("/api/review", $data);
 
     // Assert
     // 상태코드가 200인지 확인, 응답본문이 같은지 확인
@@ -105,7 +105,7 @@ class ReviewControllerTest extends TestCase
 
     // 테스트할 리뷰 수정 요청
     $response = $this->actingAs($user)
-    ->putJson("/api/review/{request}", $data);
+    ->putJson("/api/review", $data);
 
 
     // 응답 상태 코드 확인
