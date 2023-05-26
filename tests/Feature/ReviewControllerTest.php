@@ -26,6 +26,7 @@ class ReviewControllerTest extends TestCase
     ]);
 
     $data = [
+      'restaurant_id' => 1,
       'rating' => 4,
       'review_text' => 'This is a great restaurant.',
       // UploadedFile::fake() : 파일 업로드
