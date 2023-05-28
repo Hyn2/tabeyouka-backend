@@ -41,4 +41,28 @@ class RestaurantController extends Controller
             'reviews' => $reviews,
         ]);
     }
+
+    public function store(Request $request)
+    {
+        $restaurant = new Restaurant($request->all());
+        $restaurant->save();
+
+        return response()->json($restaurant, 201);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $restaurant = Restaurant::findOrFail($id);
+        $restaurant->update($request->all());
+
+        return response()->json($restaurant, 200);
+    }
+
+    public function destroy($id)
+    {
+        $restaurant = Restaurant::findOrFail($id);
+        $restaurant->delete();
+
+        return response()->json(null, 204);
+    }
 }

@@ -61,4 +61,49 @@ class RestaurantControllerTest extends TestCase
               'reviews' => [],
             ]);
   }
+
+  /** @test */
+  public function test_stores_a_new_restaurant()
+  {
+    $restaurantData = [
+      'title' => 'Test Restaurant',
+      'address' => '123 Main Street',
+      'menu_type' => 'Italian',
+      'phone_number' => '555-1234',
+      'total_points' => 0,
+      'total_votes' => 0,
+      'image' => 'test-image.jpg',
+    ];
+
+    $response = $this->postJson('/api/restaurants', $restaurantData);
+
+    $response->assertStatus(201)->assertJson($restaurantData);
+    $this->assertDatabaseHas('restaurants', $restaurantData);
+  }
+
+  /** @test */
+  public function test_updates_an_existing_restaurant()
+  {
+    $restaurant = Restaurant::factory()->create();
+    $updateData = [
+      'title' => 'Updated Restaurant',
+      'address' => '123 Updated Street',
+    ];
+
+    $response = $this->putJson("/api/restaurants/{$restaurant->id}", $updateData);
+
+    $response->assertStatus(200)->assertJson($updateData);
+    $this->assertDatabaseHas('restaurants', array_merge(['id' => $restaurant->id], $updateData));
+  }
+
+  /** @test */
+  public function test_deletes_an_existing_restaurant()
+  {
+    $restaurant = Restaurant::factory()->create();
+
+    $response = $this->deleteJson("/api/restaurants/{$restaurant->id}");
+
+    $response->assertStatus(204);
+    $this->assertDatabaseMissing('restaurants', ['id' => $restaurant->id]);
+  }
 }
