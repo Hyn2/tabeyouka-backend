@@ -24,13 +24,13 @@ Route::get('/restaurants', [RestaurantController::class, 'index']);
 Route::get('/restaurants/{id}', [RestaurantController::class, 'getStoreById']);
 
 // Add Review
-Route::post('/review/{request}', [ReviewController::class, 'addReview']);
+Route::post('/review', [ReviewController::class, 'addReview']);
 // Delete Review
 Route::delete('/review/{id}', [ReviewController::class, 'deleteReview']);
 // Get Review(for edit)
 Route::get('/review/{id}', [ReviewController::class, 'getReviewById']);
 // Edit Review
-Route::put('/review/{request}', [ReviewController::class, 'editReview']);
+Route::put('/review', [ReviewController::class, 'editReview']);
 
 // Teammates
 Route::get('teammates', [TeammatesController::class, 'index']);
