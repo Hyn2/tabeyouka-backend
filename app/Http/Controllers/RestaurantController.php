@@ -19,6 +19,7 @@ class RestaurantController extends Controller
                 'phone_number' => $restaurant->phone_number,
                 'total_points' => $restaurant->total_points,
                 'total_votes' => $restaurant->total_votes,
+                'image' => $restaurant->image,
             ];
         }));
     }
@@ -31,7 +32,7 @@ class RestaurantController extends Controller
      */
     public function getStoreById($id)
     {
-        $restaurant = Restaurant::select('id', 'title', 'address', 'menu_type', 'phone_number', 'total_points', 'total_votes')->where('id', $id)->firstOrFail();
+        $restaurant = Restaurant::select('id', 'title', 'address', 'menu_type', 'phone_number', 'total_points', 'total_votes', 'image')->where('id', $id)->firstOrFail();
 
         $reviews = $restaurant->reviews()->where('restaurant_id', $restaurant->id)->select('id', 'author_id', 'restaurant_id', 'rating', 'review_text', 'image_file')->get();
 
