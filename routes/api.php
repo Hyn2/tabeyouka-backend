@@ -34,6 +34,9 @@ Route::put('/review', [ReviewController::class, 'editReview']);
 
 // Teammates
 Route::get('teammates', [TeammatesController::class, 'index']);
+Route::post('teammates', [TeammatesController::class, 'store']);
+Route::put('teammates/{id}', [TeammatesController::class, 'update']);
+Route::delete('teammates/{id}', [TeammatesController::class, 'destroy']);
 
 // Community
 Route::get('/community/posts/{id}', [CommunityController::class, 'show'])->name('community.posts.show');
