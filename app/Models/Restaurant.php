@@ -19,6 +19,7 @@ class Restaurant extends Model
         'phone_number',
         'total_points',
         'total_votes',
+        'image',
     ];
 
     public function reviews()
