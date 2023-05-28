@@ -22,6 +22,9 @@ Route::middleware('auth:sanctum')->post('/logout', [UserController::class, 'logo
 Route::get('/restaurants', [RestaurantController::class, 'index']);
 // Get Specific Restaurant
 Route::get('/restaurants/{id}', [RestaurantController::class, 'getStoreById']);
+Route::post('/restaurants', [RestaurantController::class, 'store']);
+Route::put('/restaurants/{id}', [RestaurantController::class, 'update']);
+Route::delete('/restaurants/{id}', [RestaurantController::class, 'destroy']);
 
 // Add Review
 Route::post('/review', [ReviewController::class, 'addReview']);
@@ -48,7 +51,6 @@ Route::middleware(['auth'])->group(function() {
 Route::middleware(['auth'])->group(function() {
   Route::resource('community.comment', CommentController::class)->shallow();
 });
-
 Route::post('/community/{community}/comment', [CommentController::class, 'store'])->name('comment.store');
 Route::put('/community/{community}/comment/{comment}/edit', [CommentController::class, 'update'])->name('comment.update');
 Route::delete('/community/{community}/comment/{comment}', [CommentController::class, 'destroy'])->name('comment.destroy');
