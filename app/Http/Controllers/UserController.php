@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
@@ -47,9 +47,11 @@ class UserController extends Controller
     }
 
     // Logout user
-    public function logout()
+    public function logout(Request $request)
     {
-        auth()->user()->tokens()->delete();
+        $user = $request->user();
+
+        $user->tokens()->delete();
 
         return response()->json(['message' => 'User logged out successfully']);
     }

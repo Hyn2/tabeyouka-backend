@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('phone_number')->nullable();
             $table->integer('total_points')->default(0);
             $table->integer('total_votes')->default(0);
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }
