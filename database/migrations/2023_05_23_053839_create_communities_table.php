@@ -13,14 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('community')) {
-            Schema::create('community', function (Blueprint $table) {
+        if (!Schema::hasTable('communities')) {
+            Schema::create('communities', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedBigInteger('author_id')->nullable();
                 $table->foreign('author_id')->references('id')->on('users')->onDelete('set null');
                 $table->string('title');
                 $table->text('text');
-                $table->string('image_file')->nullable();
+                $table->string('image')->nullable();
                 $table->timestamps();
             });
         }
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('community');
+        Schema::dropIfExists('communities');
     }
 };
