@@ -28,7 +28,7 @@ class ReviewController extends Controller
 
         // Review 모델의 새로운 인스턴스 생성
         $review = new Review();
-        // Auth_::id()는 현재 사용자의 ID를 반환함, 그리고 리뷰의 author_id에 저장
+        // Auth::id()는 현재 사용자의 ID를 반환함, 그리고 리뷰의 author_id에 저장
         $review->author_id = Auth::id();
         // 'resturant_id 값을 리뷰에 저장'
         $review->rating = $validated['restaurant_id'];
@@ -38,7 +38,7 @@ class ReviewController extends Controller
         $review->review_text = $validated['review_text'];
         // 파일 업로드 처리
         $file = $request->file('image_file'); // $file에 저장
-        $path = $file->store('photos');; // store()메서드는 지정된 경로에 파일을 저장
+        $path = $file->store('photos'); // store()메서드는 지정된 경로에 파일을 저장
         $review->image_file = $path; // store 메서드를 활용해 저장한 경로가 $path 변수에 할당됨
         // 새 리뷰를 데이터베이스에 저장
         $review->save();

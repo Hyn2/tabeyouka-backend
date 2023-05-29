@@ -8,6 +8,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\TeammatesController;
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\LocalSemesterController;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 
 // Register User
@@ -54,3 +55,9 @@ Route::middleware(['auth'])->group(function() {
 Route::post('/community/{community}/comment', [CommentController::class, 'store'])->name('comment.store');
 Route::put('/community/{community}/comment/{comment}/edit', [CommentController::class, 'update'])->name('comment.update');
 Route::delete('/community/{community}/comment/{comment}', [CommentController::class, 'destroy'])->name('comment.destroy');
+
+// Get LocalSemester Article  
+Route::get('/localsemester', [LocalSemesterController::class, 'getArticle']);
+
+// Edit LocalSemester Article
+Route::put('/localsemester', [LocalSemesterController::class, 'editArticle']);

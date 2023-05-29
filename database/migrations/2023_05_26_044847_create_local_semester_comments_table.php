@@ -4,13 +4,14 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateLocalSemesterCommentsTable extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
+    // 마이그레이션 실행 시
     public function up()
     {
         if (!Schema::hasTable('local_semester_comments')) {
@@ -31,6 +32,7 @@ return new class extends Migration
      *
      * @return void
      */
+    // 마이그레이션 롤백 시 실행 됨
     public function down()
     {
         Schema::dropIfExists('local_semester_comments');
