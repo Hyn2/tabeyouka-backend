@@ -54,7 +54,32 @@ class TeammateControllerTest extends TestCase
         $this->assertEquals($teammate->github_link, $response[0]->github_link);
     }
 
-    public function store(Request $request)
+    public function test_show_method()
+    {
+        // 팀원 추가 예시
+        /* 
+        $teammate = new Teammate([
+            'name' => 'John Doe',
+            'email' => 'john@example.com',
+            'position' => 'Developer',
+        ]);
+        $teammate->save();
+        */
+
+        $response = $this->getJson('/api/teammates/1');
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'id',
+                'name',
+                'email',
+                'position',
+                'created_at',
+                'updated_at'
+            ]);
+    }
+
+    public function test_store_method(Request $request)
     {
         $request->validate([
             'student_id' => 'required',

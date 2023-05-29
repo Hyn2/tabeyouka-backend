@@ -12,6 +12,7 @@ class TeammateController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    // 전체 팀원 정보 조회
     public function index()
     {
         $teammates = Teammate::all();
@@ -27,12 +28,25 @@ class TeammateController extends Controller
         }));
     }
 
+    // 특정 팀원 정보 조회
+    public function show($id)
+    {
+        $teammate = Teammate::find($id);
+
+        if ($teammate) {
+            return response()->json($teammate);
+        } else {
+            return response()->json(['error' => 'Teammate not found'], 404);
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      * 
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
+    // 팀원 정보 생성
     public function store(Request $request)
     {
         $request->validate([
@@ -64,6 +78,7 @@ class TeammateController extends Controller
      * @param int $id
      * @param \Illuminate\Http\Response
      */
+    // 팀원 정보 수정
     public function update(Request $request, $id)
     {
         $teammate = Teammate::findOrFail($id);
@@ -96,6 +111,7 @@ class TeammateController extends Controller
      * @param int $id
      * @param \Illuminate\Http\Response
      */
+    // 팀원 정보 삭제
     public function destroy($id)
     {
         $teammate = Teammate::findOrFail($id);
