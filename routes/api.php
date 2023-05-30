@@ -59,6 +59,14 @@ Route::delete('/community/{community}/comment/{comment}', [CommentController::cl
 
 // Get LocalSemester Article  
 Route::get('/localsemester', [LocalSemesterController::class, 'getArticle']);
-
 // Edit LocalSemester Article
 Route::put('/localsemester', [LocalSemesterController::class, 'editArticle']);
+
+// Get LocalSemester Comments  
+Route::get('/localsemestercomments', [LocalSemesterCommentsController::class, 'getComments']);
+// post LocalSemester Comment
+Route::post('/localsemestercomments', [LocalSemesterCommentsController::class, 'addComment']);
+// edit LocalSemester Comment
+Route::put('/localsemestercomments', [LocalSemesterCommentsController::class, 'editComment']);
+// delete LocalSemester Comment
+Route::delete('/localsemestercomments{id}', [LocalSemesterCommentsController::class, 'deleteComment']);
