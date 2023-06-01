@@ -37,11 +37,11 @@ Route::get('/review/{id}', [ReviewController::class, 'getReviewById']);
 Route::put('/review', [ReviewController::class, 'editReview']);
 
 // Teammates
-Route::get('teammates', [TeammatesController::class, 'index']);
+Route::get('/teammates', [TeammateController::class, 'index']);
 Route::get('/teammates/{id}', [TeammateController::class, 'show']);
-Route::post('teammates', [TeammatesController::class, 'store']);
-Route::put('teammates/{id}', [TeammatesController::class, 'update']);
-Route::delete('teammates/{id}', [TeammatesController::class, 'destroy']);
+Route::post('/teammates', [TeammateController::class, 'store']);
+Route::put('/teammates/{id}', [TeammateController::class, 'update']);
+Route::delete('/teammates/{id}', [TeammateController::class, 'destroy']);
 
 // Community
 Route::get('/community/posts/{id}', [CommunityController::class, 'show'])->name('community.posts.show');
@@ -50,12 +50,14 @@ Route::middleware(['auth'])->group(function() {
 });
 
 // Comment
-Route::middleware(['auth'])->group(function() {
-  Route::resource('community.comment', CommentController::class)->shallow();
-});
-Route::post('/community/{community}/comment', [CommentController::class, 'store'])->name('comment.store');
-Route::put('/community/{community}/comment/{comment}/edit', [CommentController::class, 'update'])->name('comment.update');
-Route::delete('/community/{community}/comment/{comment}', [CommentController::class, 'destroy'])->name('comment.destroy');
+Route::resource('comment', CommentController::class);
+// Route::group(['middleware' => 'auth'], function () {
+//   Route::post('/community/{community}/comment', 'CommentController@store')->name('comment.store');
+//   Route::put('/comment/{comment}', 'CommentController@update')->name('comment.update');
+//   Route::delete('/comment/{comment}', 'CommentController@destroy')->name('comment.destroy');
+// });
+
+Route::get('/comment/{comment}', 'CommentController@show')->name('comment.show');
 
 // Get LocalSemester Article  
 Route::get('/localsemester', [LocalSemesterController::class, 'getArticle']);
