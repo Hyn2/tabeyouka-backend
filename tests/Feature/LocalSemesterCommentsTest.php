@@ -67,7 +67,7 @@ class LocalSemesterCommentsTest extends TestCase
 
         $lsComments = LocalSemesterComments::factory()->create();
 
-        $response = $this->actingAs($user)->deleteJson("/api/localsemestercomments{$lsComments->id}");
+        $response = $this->actingAs($user)->deleteJson("/api/localsemestercomments/{$lsComments->id}");
 
         $response->assertStatus(200)->assertJson(['message' => 'Delete comment successfully']);
     }
