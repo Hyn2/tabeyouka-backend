@@ -9,6 +9,7 @@ use App\Http\Controllers\TeammatesController;
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LocalSemesterController;
+use App\Http\Controllers\LocalSemesterCommentsController;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 
 // Register User
@@ -61,6 +62,14 @@ Route::get('/comment/{comment}', 'CommentController@show')->name('comment.show')
 
 // Get LocalSemester Article  
 Route::get('/localsemester', [LocalSemesterController::class, 'getArticle']);
-
 // Edit LocalSemester Article
 Route::put('/localsemester', [LocalSemesterController::class, 'editArticle']);
+
+// Get LocalSemester Comments  
+Route::get('/localsemestercomments', [LocalSemesterCommentsController::class, 'getComments']);
+// post LocalSemester Comment
+Route::post('/localsemestercomments', [LocalSemesterCommentsController::class, 'addComment']);
+// edit LocalSemester Comment
+Route::put('/localsemestercomments', [LocalSemesterCommentsController::class, 'editComment']);
+// delete LocalSemester Comment
+Route::delete('/localsemestercomments/{id}', [LocalSemesterCommentsController::class, 'deleteComment']);
