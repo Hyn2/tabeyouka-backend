@@ -20,6 +20,9 @@ class LocalSemesterController extends Controller
             return response()->json(['errors' => $errMsg], 422);
         }
         $localSemester = LocalSemester::first();
+        if(!$localSemester) {
+            return response()->json(['message' => 'article is not found'], 404);
+        }
         $localSemester->article=$validated['article'];
         $localSemester->save();
         return response()->json(['message' => 'Edit article successfully']);
