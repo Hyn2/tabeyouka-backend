@@ -127,4 +127,12 @@ class ReviewController extends Controller
         $review->save();
         return response()->json(['message' => 'Edit review successfully']);
     }
+
+    public function getRestaurantReviews($restaurant_id)
+    {
+        // 받은 아이디를 기반으로
+        // $restaurant_id 와 테이블의 restaurant_id와 일치하는 데이터를 가져옴
+        $reviews = Review::WHERE('restaurant_id', $restaurant_id)->get();
+        return response()->json($reviews);
+    }
 }

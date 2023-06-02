@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\Review;
 use App\Models\User;
+use App\Models\Restaurant;
 use Illuminate\Http\UploadedFile;
 
 
@@ -117,4 +118,24 @@ class ReviewControllerTest extends TestCase
     $this->assertEquals(1, $updatedReview->rating);
     $this->assertEquals('veryveryveryvery delicious', $updatedReview->review_text);
   }
+
+  public function test_get_restaurant_reviews_successfully()
+  {
+      // 레스토랑 팩토리 생성
+      $restaurant = Restaurant::factory()->create();
+  
+      // 5개의 리뷰 팩토리 생성
+      $reviews = Review::factory()->count(5)->create([
+          'restaurant_id' => $restaurant->id,
+      ]);
+  
+      $response = $this->getJson("/api/reviews/{$restaurant->id}");
+  
+      // Assert that the response has a 200 status code
+      $response->assertStatus(200)
+               ->assertJson($reviews->toArray());
+
+  }
+  
+  
 }

@@ -36,6 +36,8 @@ Route::delete('/review/{id}', [ReviewController::class, 'deleteReview']);
 Route::get('/review/{id}', [ReviewController::class, 'getReviewById']);
 // Edit Review
 Route::put('/review', [ReviewController::class, 'editReview']);
+// Get Restaurant Review
+Route::get('/reviews/{restaurant_id}', [ReviewController::class, 'getRestaurantReviews']);
 
 // Teammates
 Route::get('teammates', [TeammatesController::class, 'index']);
