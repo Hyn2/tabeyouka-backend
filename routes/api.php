@@ -28,14 +28,30 @@ Route::post('/restaurants', [RestaurantController::class, 'store']);
 Route::put('/restaurants/{id}', [RestaurantController::class, 'update']);
 Route::delete('/restaurants/{id}', [RestaurantController::class, 'destroy']);
 
-// Add Review
-Route::post('/review', [ReviewController::class, 'addReview']);
-// Delete Review
-Route::delete('/review/{id}', [ReviewController::class, 'deleteReview']);
+
+Route::middleware(['auth'])->group(function() {
+  // Add Review
+  Route::post('/review', [ReviewController::class, 'addReview'])->middleware('review.add');
+  // Delete Review
+  Route::delete('/review/{id}', [ReviewController::class, 'deleteReview']);
+  // Edit Review
+  Route::put('/review', [ReviewController::class, 'editReview'])->middleware('review.edit');
+  // post LocalSemester Comment
+  Route::post('/localsemestercomments', [LocalSemesterCommentsController::class, 'addComment']);
+  // edit LocalSemester Comment
+  Route::put('/localsemestercomments', [LocalSemesterCommentsController::class, 'editComment']);
+  // delete LocalSemester Comment
+  Route::delete('/localsemestercomments/{id}', [LocalSemesterCommentsController::class, 'deleteComment']);
+});
+
+// Get LocalSemester Article  
+Route::get('/localsemester', [LocalSemesterController::class, 'getArticle']);
+// Edit LocalSemester Article
+Route::put('/localsemester', [LocalSemesterController::class, 'editArticle']);
+// Get LocalSemester Comments  
+Route::get('/localsemestercomments', [LocalSemesterCommentsController::class, 'getComments']);
 // Get Review(for edit)
 Route::get('/review/{id}', [ReviewController::class, 'getReviewById']);
-// Edit Review
-Route::put('/review', [ReviewController::class, 'editReview']);
 // Get Restaurant Review
 Route::get('/reviews/{restaurant_id}', [ReviewController::class, 'getRestaurantReviews']);
 
@@ -60,16 +76,3 @@ Route::post('/community/{community}/comment', [CommentController::class, 'store'
 Route::put('/community/{community}/comment/{comment}/edit', [CommentController::class, 'update'])->name('comment.update');
 Route::delete('/community/{community}/comment/{comment}', [CommentController::class, 'destroy'])->name('comment.destroy');
 
-// Get LocalSemester Article  
-Route::get('/localsemester', [LocalSemesterController::class, 'getArticle']);
-// Edit LocalSemester Article
-Route::put('/localsemester', [LocalSemesterController::class, 'editArticle']);
-
-// Get LocalSemester Comments  
-Route::get('/localsemestercomments', [LocalSemesterCommentsController::class, 'getComments']);
-// post LocalSemester Comment
-Route::post('/localsemestercomments', [LocalSemesterCommentsController::class, 'addComment']);
-// edit LocalSemester Comment
-Route::put('/localsemestercomments', [LocalSemesterCommentsController::class, 'editComment']);
-// delete LocalSemester Comment
-Route::delete('/localsemestercomments/{id}', [LocalSemesterCommentsController::class, 'deleteComment']);

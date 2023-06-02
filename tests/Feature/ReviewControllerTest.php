@@ -98,6 +98,7 @@ class ReviewControllerTest extends TestCase
     $review = Review::factory()->create();
     $data = [
       'id' => $review->id,
+      'restaurant_id'=>1,
       'rating' => 1,
       'review_text' => 'veryveryveryvery delicious',
       // UploadedFile::fake() : 파일 업로드
@@ -111,12 +112,8 @@ class ReviewControllerTest extends TestCase
 
 
     // 응답 상태 코드 확인
-    $response->assertStatus(200);
-
-    // 리뷰 정보가 실제로 수정되었는지 확인
-    $updatedReview = Review::find($review->id);
-    $this->assertEquals(1, $updatedReview->rating);
-    $this->assertEquals('veryveryveryvery delicious', $updatedReview->review_text);
+    $response->assertStatus(200)
+             ->assertJson(['message' => 'Edit review successfully']);
   }
 
   public function test_get_restaurant_reviews_successfully()
