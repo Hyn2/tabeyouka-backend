@@ -27,11 +27,16 @@ class LocalSemesterCommentsTest extends TestCase
 
     public function test_add_comment_successfully()
     {
+        $user = User::create([
+            'email' => 'test@example.com',
+            'nickname' => 'test-nickname',
+            'password' => bcrypt('password'),
+          ]);
         $data = [
             'comment_text' => 'awesome'
         ];
 
-        $response = $this->postJson("/api/localsemestercomments",$data);
+        $response = $this->actingAs($user)->postJson("/api/localsemestercomments",$data);
 
         $response->assertStatus(200)->assertJson(['message' => 'Add comment successfully']);
     }

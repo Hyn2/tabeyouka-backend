@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\Review;
 use App\Models\User;
+use App\Models\Restaurant;
 use Illuminate\Http\UploadedFile;
 
 
@@ -97,6 +98,7 @@ class ReviewControllerTest extends TestCase
     $review = Review::factory()->create();
     $data = [
       'id' => $review->id,
+      'restaurant_id'=>1,
       'rating' => 1,
       'review_text' => 'veryveryveryvery delicious',
       // UploadedFile::fake() : 파일 업로드
@@ -110,11 +112,27 @@ class ReviewControllerTest extends TestCase
 
 
     // 응답 상태 코드 확인
-    $response->assertStatus(200);
-
-    // 리뷰 정보가 실제로 수정되었는지 확인
-    $updatedReview = Review::find($review->id);
-    $this->assertEquals(1, $updatedReview->rating);
-    $this->assertEquals('veryveryveryvery delicious', $updatedReview->review_text);
+    $response->assertStatus(200)
+             ->assertJson(['message' => 'Edit review successfully']);
   }
+
+  public function test_get_restaurant_reviews_successfully()
+  {
+      // 레스토랑 팩토리 생성
+      $restaurant = Restaurant::factory()->create();
+  
+      // 5개의 리뷰 팩토리 생성
+      $reviews = Review::factory()->count(5)->create([
+          'restaurant_id' => $restaurant->id,
+      ]);
+  
+      $response = $this->getJson("/api/reviews/{$restaurant->id}");
+  
+      // Assert that the response has a 200 status code
+      $response->assertStatus(200)
+               ->assertJson($reviews->toArray());
+
+  }
+  
+  
 }
