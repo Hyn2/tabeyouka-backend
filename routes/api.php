@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\ReviewController;
-use App\Http\Controllers\TeammatesController;
+use App\Http\Controllers\TeammateController;
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LocalSemesterController;
