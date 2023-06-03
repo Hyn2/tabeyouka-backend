@@ -14,28 +14,29 @@ class ReviewController extends Controller
     {
         // request 변수로 입력 정보를 받아서 validate에 정의 된 규칙에 부합한지 판단하고
         // $validate 변수에 저장
-        try {
-            $validated = $request->validate([
-                'restaurant_id' => 'required',
-                'rating' => 'required',
-                'review_text' => 'required|min:10',
-                'image_file' => 'required',
-            ]);
-        } catch (ValidationException $e) {
-            $errMsg = $e->errors();
-            return response()->json(['errors' => $errMsg], 422);
-        }
+        // try {
+        //     $validated = $request->validate([
+        //         'restaurant_id' => 'required',
+        //         'rating' => 'required',
+        //         'review_text' => 'required|min:10',
+        //         'image_file' => 'required',
+        //     ]);
+        // } catch (ValidationException $e) {
+        //     $errMsg = $e->errors();
+        //     return response()->json(['errors' => $errMsg], 422);
+        // }
+        // use middleware
 
         // Review 모델의 새로운 인스턴스 생성
         $review = new Review();
         // Auth::id()는 현재 사용자의 ID를 반환함, 그리고 리뷰의 author_id에 저장
         $review->author_id = Auth::id();
         // 'resturant_id 값을 리뷰에 저장'
-        $review->rating = $validated['restaurant_id'];
+        $review->rating = $request['restaurant_id'];
         // 'rating' 필드의 값을 리뷰의 'rating' 속성에 할당
-        $review->rating = $validated['rating'];
+        $review->rating = $request['rating'];
         // 리뷰의 'review_text' 속성에 할당
-        $review->review_text = $validated['review_text'];
+        $review->review_text = $request['review_text'];
         // 파일 업로드 처리
         $file = $request->file('image_file'); // $file에 저장
         $path = $file->store('photos'); // store()메서드는 지정된 경로에 파일을 저장
@@ -104,27 +105,35 @@ class ReviewController extends Controller
     // 리뷰 수정
     public function editReview(Request $request)
     {
-        // request 변수로 입력 정보를 받아서 validate에 정의 된 규칙에 부합한지 판단하고
-        // $validate 변수에 저장
-        try {
-            $validated = $request->validate([
-                'id' => 'required',
-                'rating' => 'required',
-                'review_text' => 'required|min:10',
-                'image_file' => 'required',
-            ]);
-        } catch (ValidationException $e) {
-            $errMsg = $e->errors();
-            return response()->json(['errors' => $errMsg], 422);
-        }
-        $review = Review::find($validated['id']);
+        // // request 변수로 입력 정보를 받아서 validate에 정의 된 규칙에 부합한지 판단하고
+        // // $validate 변수에 저장
+        // try {
+        //     $validated = $request->validate([
+        //         'id' => 'required',
+        //         'rating' => 'required',
+        //         'review_text' => 'required|min:10',
+        //         'image_file' => 'required',
+        //     ]);
+        // } catch (ValidationException $e) {
+        //     $errMsg = $e->errors();
+        //     return response()->json(['errors' => $errMsg], 422);
+        // }
+        $review = Review::find($request['id']);
         // 정보 갱신
-        $review->rating = $validated['rating'];
-        $review->review_text = $validated['review_text'];
+        $review->rating = $request['rating'];
+        $review->review_text = $request['review_text'];
         $file = $request->file('image_file'); // $file에 저장
         $path = $file->store('photos'); // store()메서드는 지정된 경로에 파일을 저장
         $review->image_file = $path; // store 메서드를 활용해 저장한 경로가 $path 변수에 할당됨
         $review->save();
         return response()->json(['message' => 'Edit review successfully']);
+    }
+
+    public function getRestaurantReviews($restaurant_id)
+    {
+        // 받은 아이디를 기반으로
+        // $restaurant_id 와 테이블의 restaurant_id와 일치하는 데이터를 가져옴
+        $reviews = Review::WHERE('restaurant_id', $restaurant_id)->get();
+        return response()->json($reviews);
     }
 }
