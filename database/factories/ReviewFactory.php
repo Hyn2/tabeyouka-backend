@@ -17,6 +17,7 @@ class ReviewFactory extends Factory
     public function definition()
     {
         return [
+            'restaurant_id' => $this->faker->numberBetween(1,2),
             'rating' => $this->faker->numberBetween(1, 5),
             'review_text' => $this->faker->paragraph,
             'image_file' => 'default_value.jpg',
