@@ -2,75 +2,81 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
-use App\Models\User;
 use App\Models\Comment;
+use App\Models\User;
 use App\Models\Community;
-use App\Http\Controllers\CommentController;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class CommentControllerTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshDatabase;
 
-    public function test_store_new_comment()
+    private $user;
+    private $community;
+    private $comment;
+
+    public function setUp(): void
     {
-        $user = User::factory()->create();
-        $post = Community::factory()->create(['author_id' => $user->id]);
-
-        $commentData = [
-            'text' => $this->faker->sentence,
-        ];
-
-        $response = $this->actingAs($user)->post(route('comment.store', ['community' => $post->id]), $commentData);
-
-        $response->assertStatus(302);
-        $response->assertRedirect(route('community.show', ['community' => $post->id]));
-        $response->assertSessionHas('success', '댓글이 작성되었습니다.');
-        $this->assertDatabaseHas('comments', $commentData);
+        parent::setUp();
+        $this->user = User::factory()->create();
+        $this->community = Community::factory()->for($this->user, 'author')->create();
+        $this->comment = Comment::factory()->for($this->user, 'author')->for($this->community, 'post')->create();
+        $this->comment->refresh();
     }
 
-    public function test_update_comment()
+    public function test_store_comment()
     {
-        $user = User::factory()->create();
-        $post = Community::factory()->create(['author_id' => $user->id]);
-        $comment = Comment::factory()->create([
-            'author_id' => $user->id,
-            'post_id' => $post->id
+        $this->actingAs($this->user);
+        $response = $this->post(route('comment.store', $this->community->id),
+            ['text' => 'This is a new comment']);
+
+        $response->assertStatus(201);
+    }
+
+    public function test_show_comment()
+    {
+        $response = $this->getJson(route('comment.index', ['postId' => $this->community->id]));
+        $response->assertStatus(200);
+        $response->assertJson([
+            'comments' => [
+                [
+                    'id' => $this->comment->id,
+                    'text' => $this->comment->text,
+                    'author_id' => $this->user->id,
+                    'post_id' => $this->community->id
+                ]
+            ]
+        ]);
+    }
+
+    public function test_updating_comment()
+    {
+        $this->actingAs($this->user);
+        $response = $this->patchJson(route('comment.update', ['commentId' => $this->comment->id]),
+            ['text' => 'This is an updated comment']);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'comment' => [
+                'id' => $this->comment->id,
+                'text' => 'This is an updated comment',
+                'author_id' => $this->user->id,
+                'post_id' => $this->community->id
+            ]
+        ]);
+    }
+
+    function test_destroy_comment()
+    {
+        $this->actingAs($this->user);
+        $response = $this->deleteJson(route('comment.destroy', ['commentId' => $this->comment->id]));
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'message' => '댓글이 삭제되었습니다.'
         ]);
 
-        $updatedData = [
-            'text' => $this->faker->sentence,
-        ];
-
-        $response = $this->actingAs($user)->put(route('comment.update', ['community' => $post->id, 'comment' => $comment->id]), $updatedData);
-
-        $response->assertStatus(302);
-        $response->assertRedirect(route('community.show', ['community' => $post->id]));
-        $response->assertSessionHas('success', '댓글이 업데이트되었습니다.');
-        $this->assertDatabaseHas('comments', array_merge($updatedData, ['id' => $comment->id]));
-    }
-
-    public function test_delete_comment()
-    {
-        $user = User::factory()->create();
-        $community = Community::factory()->create(['author_id' => $user->id]);
-        $comment = Comment::factory()->create([
-            'author_id' => $user->id,
-            'post_id' => $community->id
-        ]);
-
-        $response = $this->actingAs($user)->delete(route('comment.destroy', ['community' => $community->id, 'comment' => $comment->id]));
-
-        if ($response) {
-            $response->assertStatus(302)
-                ->assertRedirect(route('community.show', ['community' => $community->id]))
-                ->assertSessionHas('success', '댓글이 삭제되었습니다.');
-
-            $this->assertDatabaseMissing('comments', ['id' => $comment->id]);
-        } else {
-            $this->fail('response 객체 생성 실패');
-        }
-    }
+        $this->assertDatabaseMissing('comments', ['id' => $this->comment->id]);
+    }    
 }
