@@ -63,18 +63,18 @@ Route::put('/teammates/{id}', [TeammateController::class, 'update']);
 Route::delete('/teammates/{id}', [TeammateController::class, 'destroy']);
 
 // Community
-Route::get('/community/posts/{id}', [CommunityController::class, 'show'])->name('community.posts.show');
-Route::middleware(['auth'])->group(function() {
-  Route::resource('community', CommunityController::class);
-});
-
-// Comment
-Route::resource('comment', CommentController::class);
-// Route::group(['middleware' => 'auth'], function () {
-//   Route::post('/community/{community}/comment', 'CommentController@store')->name('comment.store');
-//   Route::put('/comment/{comment}', 'CommentController@update')->name('comment.update');
-//   Route::delete('/comment/{comment}', 'CommentController@destroy')->name('comment.destroy');
+// Route::middleware(['auth'])->group(function() {
+  Route::get('/community', [CommunityController::class, 'index'])->name('community.index');
+  Route::get('/community/create', [CommunityController::class, 'create'])->name('community.create');
+  Route::post('/community/store', [CommunityController::class, 'store'])->name('community.store');
+  Route::get('/community/{id}', [CommunityController::class, 'show'])->name('community.show');
+  Route::get('/community/{id}/edit', [CommunityController::class, 'edit'])->name('community.edit');
+  Route::put('/community/{id}/update', [CommunityController::class, 'update'])->name('community.update');
+  Route::delete('/community/{id}', [CommunityController::class, 'destroy'])->name('community.destroy');
 // });
 
-Route::get('/comment/{comment}', 'CommentController@show')->name('comment.show');
-
+// Comment
+Route::get('posts/{postId}/comments', [CommentController::class, 'index'])->name('comment.index');
+Route::post('posts/{postId}/comments', [CommentController::class, 'store'])->name('comment.store');
+Route::patch('comments/{commentId}', [CommentController::class, 'update'])->name('comment.update');
+Route::delete('comments/{commentId}', [CommentController::class, 'destroy'])->name('comment.destroy');
