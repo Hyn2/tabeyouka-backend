@@ -48,7 +48,7 @@ class LocalSemesterCommentsController extends Controller
         }
         catch(ValidationException $e) {
             $errMsg = $e->errors();
-            return response()->json(['errors' => $errMsg], 422);
+            return response()->json(['errors' => $errMsg], 400);
         }
 
 

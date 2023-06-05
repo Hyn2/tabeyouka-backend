@@ -20,7 +20,7 @@ class ValidateAddReview
         $fields = ['restaurant_id', 'rating', 'review_text', 'image_file'];
         foreach($fields as $fields) {
             if(empty($data[$fields])) {
-                return response()->json(['error' => $fields.' is required']);
+                return response()->json(['error' => $fields.' is required'], 400);
             }
         }
         return $next($request);

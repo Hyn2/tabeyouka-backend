@@ -57,7 +57,7 @@ class LocalSemesterCommentsTest extends TestCase
 
         $lsComments = LocalSemesterComments::factory()->create();
 
-        $response = $this->actingAs($user)->putJson("/api/localsemestercomments",$data);
+        $response = $this->actingAs($user)->patchJson("/api/localsemestercomments",$data);
 
         $response->assertStatus(200)->assertJson(['message' => 'Edit comment successfully']);
     }
