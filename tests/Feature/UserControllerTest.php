@@ -81,6 +81,23 @@ class UserControllerTest extends TestCase
       $this->assertDatabaseMissing('personal_access_tokens', ['tokenable_id' => $user->id]);
     }
 
+    /** @test */
+    public function refreshToken(Request $request)
+    {
+        $refreshTokenRepo = app(RefreshTokenRepository::class);
+
+        $refreshToken = $request->header('Authorization');
+        $refreshToken = preg_replace('/^Bearer /', '', $refreshToken);
+
+        $newToken = $refreshTokenRepo->getAccessToken($refreshToken);
+
+        if ($newToken) {
+            return response()->json(['token' => $newToken], 200);
+        } else {
+            return response()->json(['message' => 'Unable to refresh token'], 401);
+        }
+    }
+
     // 테스트 진행 전의 세팅과 이후의 정리를 지속적으로 수행
     public function tearDown():void
     {
