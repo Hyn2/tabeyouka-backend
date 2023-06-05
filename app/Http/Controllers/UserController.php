@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class UserController extends Controller
 {
@@ -54,5 +56,15 @@ class UserController extends Controller
         $user->tokens()->delete();
 
         return response()->json(['message' => 'User logged out successfully']);
+    }
+
+    // refresh Token
+    public function refreshToken(Request $request) {
+        try {
+            $newToken = Auth::refresh();
+            return response()->json(['token' => $newToken], 200);
+        } catch (JWTException $e) {
+            return response()->json(['message' => $e->getMessage()], 401);
+        }
     }
 }
