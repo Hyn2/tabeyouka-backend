@@ -108,7 +108,7 @@ class ReviewControllerTest extends TestCase
 
     // 테스트할 리뷰 수정 요청
     $response = $this->actingAs($user)
-    ->putJson("/api/review", $data);
+    ->patchJson("/api/review", $data);
 
 
     // 응답 상태 코드 확인
@@ -126,7 +126,7 @@ class ReviewControllerTest extends TestCase
           'restaurant_id' => $restaurant->id,
       ]);
   
-      $response = $this->getJson("/api/reviews/{$restaurant->id}");
+      $response = $this->getJson("/api/restaurantreview/{$restaurant->id}");
   
       // Assert that the response has a 200 status code
       $response->assertStatus(200)

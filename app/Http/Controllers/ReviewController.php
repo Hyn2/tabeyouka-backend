@@ -15,18 +15,17 @@ class ReviewController extends Controller
     {
         // request 변수로 입력 정보를 받아서 validate에 정의 된 규칙에 부합한지 판단하고
         // $validate 변수에 저장
-        // try {
-        //     $validated = $request->validate([
-        //         'restaurant_id' => 'required',
-        //         'rating' => 'required',
-        //         'review_text' => 'required|min:10',
-        //         'image_file' => 'required',
-        //     ]);
-        // } catch (ValidationException $e) {
-        //     $errMsg = $e->errors();
-        //     return response()->json(['errors' => $errMsg], 422);
-        // }
-        // use middleware
+        try {
+            $validated = $request->validate([
+                'restaurant_id' => 'required',
+                'rating' => 'required',
+                'review_text' => 'required|min:10',
+                'image_file' => 'required',
+            ]);
+        } catch (ValidationException $e) {
+            $errMsg = $e->errors();
+            return response()->json(['errors' => $errMsg], 400);
+        }
 
         // Review 모델의 새로운 인스턴스 생성
         $review = new Review();
@@ -79,7 +78,7 @@ class ReviewController extends Controller
         // 리뷰가 존재하지 않는 경우 오류 응답 반환
         // find() 메서드는 값이 존재하지 않으면 null 값을 반환하기에 만약 해당하는 레코드가 없으면 에러를 전달
         if (!$review) {
-            return response()->json(['message' => 'Review was not found'], 404);
+            return response()->json(['message' => 'Review Not Found'], 404);
         }
         // Review:: 는 Review 모델에 대한 정적인 호출을 의미
         // 해당하는 필드의 아이디 값이 일치하는지 확인한 후 첫 번째로 일치하는 식당을 반환 or 404
@@ -106,26 +105,26 @@ class ReviewController extends Controller
     // 리뷰 수정
     public function editReview(Request $request)
     {
-        // // request 변수로 입력 정보를 받아서 validate에 정의 된 규칙에 부합한지 판단하고
-        // // $validate 변수에 저장
-        // try {
-        //     $validated = $request->validate([
-        //         'id' => 'required',
-        //         'rating' => 'required',
-        //         'review_text' => 'required|min:10',
-        //         'image_file' => 'required',
-        //     ]);
-        // } catch (ValidationException $e) {
-        //     $errMsg = $e->errors();
-        //     return response()->json(['errors' => $errMsg], 422);
-        // }
+        // request 변수로 입력 정보를 받아서 validate에 정의 된 규칙에 부합한지 판단하고
+        // $validate 변수에 저장
+        try {
+            $validated = $request->validate([
+                'id' => 'required',
+                'rating' => 'required',
+                'review_text' => 'required|min:10',
+                'image_file' => 'required',
+            ]);
+        } catch (ValidationException $e) {
+            $errMsg = $e->errors();
+            return response()->json(['errors' => $errMsg], 400);
+        }
         $review = Review::find($request['id']);
         // 정보 갱신
         $review->rating = $request['rating'];
         $review->review_text = $request['review_text'];
         $file = $request->file('image_file'); // $file에 저장
         $path = $file->store('photos'); // store()메서드는 지정된 경로에 파일을 저장
-        $review->image_file = $path; // store 메서드를 활용해 저장한 경로가 $path 변수에 할당됨
+        $review->image_file = 'http://localhost:8080/storage/app/public/images/review_images'.$path; // store 메서드를 활용해 저장한 경로가 $path 변수에 할당됨
         $review->save();
         return response()->json(['message' => 'Edit review successfully']);
     }
@@ -136,7 +135,7 @@ class ReviewController extends Controller
         $restaurant = Restaurant::WHERE('id', $restaurant_id)->first();
 
         if(!$restaurant) {
-            return response()->json(['error' => 'Restaurant is not exist'],404);
+            return response()->json(['error' => 'Restaurant Not Found'],404);
         }
 
         // 받은 $restaurant_id 기반으로 테이블의 restaurant_id와 일치하는 데이터를 가져옴
