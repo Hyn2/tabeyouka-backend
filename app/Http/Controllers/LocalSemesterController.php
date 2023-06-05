@@ -17,8 +17,9 @@ class LocalSemesterController extends Controller
         }
         catch(ValidationException $e) {
             $errMsg = $e->errors();
-            return response()->json(['errors' => $errMsg], 422);
+            return response()->json(['errors' => $errMsg], 400);
         }
+
         $localSemester = LocalSemester::first();
         if(!$localSemester) {
             return response()->json(['message' => 'article is not found'], 404);

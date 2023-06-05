@@ -4,8 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use App\Models\Review;
 
-class ValidateEditReview
+class ValidateReviewGet
 {
     /**
      * Handle an incoming request.
@@ -16,12 +17,8 @@ class ValidateEditReview
      */
     public function handle(Request $request, Closure $next)
     {
-        $data = $request->all();
-        $fields = ['id', 'restaurant_id', 'rating', 'review_text', 'image_file'];
-        foreach($fields as $fields) {
-            if(empty($data[$fields])) {
-                return response()->json(['error' => $fields.' is required'], 400);
-            }
+        if(empty($data)) {
+            return response()->json(['error' => 'ID is Required'], 400);
         }
         return $next($request);
     }
