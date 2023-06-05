@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Review;
+use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -131,9 +132,16 @@ class ReviewController extends Controller
 
     public function getRestaurantReviews($restaurant_id)
     {
-        // 받은 아이디를 기반으로
-        // $restaurant_id 와 테이블의 restaurant_id와 일치하는 데이터를 가져옴
-        $reviews = Review::WHERE('restaurant_id', $restaurant_id)->get();
+        // 해당 $restaurant_id를 가진 가게가 restaurant 테이블에 존재하는지 확인
+        $restaurant = Restaurant::WHERE('id', $restaurant_id)->first();
+
+        if(!$restaurant) {
+            return response()->json(['error' => 'Restaurant is not exist'],404);
+        }
+
+        // 받은 $restaurant_id 기반으로 테이블의 restaurant_id와 일치하는 데이터를 가져옴
+         $reviews = Review::WHERE('restaurant_id', $restaurant_id)->get();
+
         return response()->json($reviews);
     }
 }
