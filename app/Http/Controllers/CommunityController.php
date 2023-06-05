@@ -28,6 +28,7 @@ class CommunityController extends Controller
 
         if ($request->hasFile('image_file')) {
             $imageName = $request->image_file->store('public'); // 파일 저장 및 고유 이름 생성
+            $imagePath = 'http://localhost:8080/storage/images/' . basename($imageName);
         } else {
             $imageName = null;
         }
@@ -36,7 +37,7 @@ class CommunityController extends Controller
             'author_id' => auth()->id(),
             'title' => $request->title,
             'text' => $request->text,
-            'image' => $imageName,
+            'image' => $imagePath,
         ]);
 
         return redirect()->route(
@@ -69,6 +70,7 @@ class CommunityController extends Controller
 
         if ($request->hasFile('image_file')) {
             $imageName = $request->image_file->store('public'); // 파일 저장 및 고유 이름 생성
+            $imagePath = 'http://localhost:8080/storage/images/' . basename($imageName);
         } else {
             $imageName = $post->image; // 이미지 파일이 없으면 예전 이미지를 유지
         }
@@ -76,7 +78,7 @@ class CommunityController extends Controller
         $post->update([
             'title' => $request->title,
             'text' => $request->text,
-            'image' => $imageName,
+            'image' => $imagePath,
         ]);
 
         return redirect()->route(
