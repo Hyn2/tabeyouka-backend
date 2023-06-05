@@ -29,31 +29,42 @@ Route::put('/restaurants/{id}', [RestaurantController::class, 'update']);
 Route::delete('/restaurants/{id}', [RestaurantController::class, 'destroy']);
 
 
-Route::middleware(['auth'])->group(function() {
+// 사용자 인증
+//Route::middleware(['auth'])->group(function() {
   // Add Review
-  Route::post('/review', [ReviewController::class, 'addReview'])->middleware('review.add');
-  // Delete Review
-  Route::delete('/review/{id}', [ReviewController::class, 'deleteReview']);
+  Route::post('/review', [ReviewController::class, 'addReview']);
   // Edit Review
-  Route::put('/review', [ReviewController::class, 'editReview'])->middleware('review.edit');
+  Route::patch('/review', [ReviewController::class, 'editReview']);
   // post LocalSemester Comment
   Route::post('/localsemestercomments', [LocalSemesterCommentsController::class, 'addComment']);
   // edit LocalSemester Comment
-  Route::put('/localsemestercomments', [LocalSemesterCommentsController::class, 'editComment']);
-  // delete LocalSemester Comment
-  Route::delete('/localsemestercomments/{id}', [LocalSemesterCommentsController::class, 'deleteComment']);
+  Route::patch('/localsemestercomments', [LocalSemesterCommentsController::class, 'editComment']);
+  // Edit LocalSemester Article
+  Route::put('/localsemester', [LocalSemesterController::class, 'editArticle']);
+  // 값이 비었는지 확인
+  Route::middleware(['validate.empty'])->group(function() {
+    // delete LocalSemester Comment
+    Route::delete('/localsemestercomments/{id}', [LocalSemesterCommentsController::class, 'deleteComment']);
+    // Delete Review
+    Route::delete('/review/{id}', [ReviewController::class, 'deleteReview']);
+  });
+//});
+
+
+// 값이 비었는지 확인
+Route::middleware(['validate.empty'])->group(function() {
+  // Get Review(for edit)
+  Route::get('/review/{id}', [ReviewController::class, 'getReviewById']);
+  // Get Restaurant Review
+  Route::get('/restaurantreview/{restaurant_id}', [ReviewController::class, 'getRestaurantReviews']); 
 });
 
-// Get LocalSemester Article  
-Route::get('/localsemester', [LocalSemesterController::class, 'getArticle']);
-// Edit LocalSemester Article
-Route::put('/localsemester', [LocalSemesterController::class, 'editArticle']);
+
 // Get LocalSemester Comments  
 Route::get('/localsemestercomments', [LocalSemesterCommentsController::class, 'getComments']);
-// Get Review(for edit)
-Route::get('/review/{id}', [ReviewController::class, 'getReviewById']);
-// Get Restaurant Review
-Route::get('/reviews/{restaurant_id}', [ReviewController::class, 'getRestaurantReviews']);
+// Get LocalSemester Article  
+Route::get('/localsemester', [LocalSemesterController::class, 'getArticle']);
+
 
 // Teammates
 Route::get('/teammates', [TeammateController::class, 'index']);
@@ -61,6 +72,7 @@ Route::get('/teammates/{id}', [TeammateController::class, 'show']);
 Route::post('/teammates', [TeammateController::class, 'store']);
 Route::put('/teammates/{id}', [TeammateController::class, 'update']);
 Route::delete('/teammates/{id}', [TeammateController::class, 'destroy']);
+
 
 // Community
 // Route::middleware(['auth'])->group(function() {
@@ -72,6 +84,7 @@ Route::delete('/teammates/{id}', [TeammateController::class, 'destroy']);
   Route::put('/community/{id}/update', [CommunityController::class, 'update'])->name('community.update');
   Route::delete('/community/{id}', [CommunityController::class, 'destroy'])->name('community.destroy');
 // });
+
 
 // Comment
 Route::get('posts/{postId}/comments', [CommentController::class, 'index'])->name('comment.index');
