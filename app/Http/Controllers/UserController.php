@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use Tymon\JWTAuth\Exceptions\JWTException;
 
 class UserController extends Controller
 {
@@ -47,17 +45,17 @@ class UserController extends Controller
             'email' => 'required',
             'password' => 'required',
         ]);
-    
+
         $credentials = $request->only('email', 'password');
         
-        if (!$token = JWTAuth::attempt($credentials)) {
+        if (!Auth::attempt($credentials)) {
             return response()->json(['message' => 'Invalid login credentials'], Response::HTTP_UNAUTHORIZED);
         }
-    
-        return response()->json([
-            'token' => $token,
-            'expires' => auth()->factory()->getTTL() * 60
-        ]);
+        
+        // 세션을 생성하고 현재 사용자의 ID를 저장합니다.
+        $request->session()->put('user_id', Auth::id());
+
+        return response()->json(['message' => 'User logged in successfully']);
     }
 
     /**
@@ -67,32 +65,10 @@ class UserController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function logout(Request $request)
-{
-    try {
-        JWTAuth::invalidate(JWTAuth::getToken());
-        return response()->json(['message' => 'User logged out successfully']);
-    } catch (JWTException $e) {
-        return response()->json(['message' => $e->getMessage()], Response::HTTP_UNAUTHORIZED);
-    }
-}
-
-    /**
-     * Refresh the provided JWT token and return a new token with an updated expiration.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function refreshToken(Request $request)
     {
-        try {
-            $token = JWTAuth::parseToken();
-            $newToken = $token->refresh();
-            return response()->json([
-                'token' => $newToken,
-                'expires' => JWTAuth::factory()->getTTL() * 60,
-            ], Response::HTTP_OK);
-        } catch (JWTException $e) {
-            return response()->json(['message' => $e->getMessage()], Response::HTTP_UNAUTHORIZED);
-        }
+        // 세션에서 사용자의 ID를 제거하여 로그아웃 처리합니다.
+        $request->session()->forget('user_id');
+
+        return response()->json(['message' => 'User logged out successfully']);
     }
 }

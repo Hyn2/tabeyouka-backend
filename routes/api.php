@@ -12,14 +12,13 @@ use App\Http\Controllers\LocalSemesterController;
 use App\Http\Controllers\LocalSemesterCommentsController;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 
-// Register User
-Route::post('/register', [UserController::class, 'register']);
-// Login User
-Route::post('/login', [UserController::class, 'login']);
-// Logout User
-Route::middleware('auth:sanctum')->post('/logout', [UserController::class, 'logout']);  // the auth:sanctum middleware is added to the /logout route to ensure that the user is authenticated before being able to log out.
-Route::middleware('auth:api')->group(function () {
-  Route::post('/refresh', [UserController::class, 'refreshToken']);
+Route::group(['middleware' => ['web']], function () {
+  // Register User
+  Route::post('/register', [UserController::class, 'register']);
+  // Login User
+  Route::post('/login', [UserController::class, 'login']);
+  // Logout User
+  Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 });
 
 
