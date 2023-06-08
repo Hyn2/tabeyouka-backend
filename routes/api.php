@@ -12,12 +12,14 @@ use App\Http\Controllers\LocalSemesterController;
 use App\Http\Controllers\LocalSemesterCommentsController;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 
-// Register User
-Route::post('/register', [UserController::class, 'register']);
-// Login User
-Route::post('/login', [UserController::class, 'login']);
-// Logout User
-Route::middleware('auth:sanctum')->post('/logout', [UserController::class, 'logout']);  // the auth:sanctum middleware is added to the /logout route to ensure that the user is authenticated before being able to log out.
+Route::group(['middleware' => ['web']], function () {
+  // Register User
+  Route::post('/register', [UserController::class, 'register']);
+  // Login User
+  Route::post('/login', [UserController::class, 'login']);
+  // Logout User
+  Route::post('/logout', [UserController::class, 'logout'])->name('logout');
+});
 
 
 // Get Entire List of Restaurants
@@ -76,18 +78,27 @@ Route::delete('/teammates/{id}', [TeammateController::class, 'destroy']);
 
 // Community
 // Route::middleware(['auth'])->group(function() {
-  Route::get('/community', [CommunityController::class, 'index'])->name('community.index');
-  Route::get('/community/create', [CommunityController::class, 'create'])->name('community.create');
-  Route::post('/community/store', [CommunityController::class, 'store'])->name('community.store');
-  Route::get('/community/{id}', [CommunityController::class, 'show'])->name('community.show');
-  Route::get('/community/{id}/edit', [CommunityController::class, 'edit'])->name('community.edit');
-  Route::put('/community/{id}/update', [CommunityController::class, 'update'])->name('community.update');
-  Route::delete('/community/{id}', [CommunityController::class, 'destroy'])->name('community.destroy');
+  // Route::get('/community', [CommunityController::class, 'index'])->name('community.index');
+  // Route::get('/community/create', [CommunityController::class, 'create'])->name('community.create');
+  // Route::post('/community/store', [CommunityController::class, 'store'])->name('community.store');
+  // Route::get('/community/{id}', [CommunityController::class, 'show'])->name('community.show');
+  // Route::get('/community/{id}/edit', [CommunityController::class, 'edit'])->name('community.edit');
+  // Route::put('/community/{id}/update', [CommunityController::class, 'update'])->name('community.update');
+  // Route::delete('/community/{id}', [CommunityController::class, 'destroy'])->name('community.destroy');
 // });
+
+Route::middleware(['auth'])->group(function() {
+  Route::apiResource('community', CommunityController::class);
+});
 
 
 // Comment
-Route::get('posts/{postId}/comments', [CommentController::class, 'index'])->name('comment.index');
-Route::post('posts/{postId}/comments', [CommentController::class, 'store'])->name('comment.store');
-Route::patch('comments/{commentId}', [CommentController::class, 'update'])->name('comment.update');
-Route::delete('comments/{commentId}', [CommentController::class, 'destroy'])->name('comment.destroy');
+// Route::get('posts/{postId}/comments', [CommentController::class, 'index'])->name('comment.index');
+// Route::post('posts/{postId}/comments', [CommentController::class, 'store'])->name('comment.store');
+// Route::patch('comments/{commentId}', [CommentController::class, 'update'])->name('comment.update');
+// Route::delete('comments/{commentId}', [CommentController::class, 'destroy'])->name('comment.destroy');
+
+Route::middleware(['auth'])->group(function() {
+  Route::apiResource('community/{community}/comments', CommentController::class)
+      ->scoped(['community' => 'id']);
+});
