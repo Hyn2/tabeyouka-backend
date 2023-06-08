@@ -44,22 +44,22 @@ Route::delete('/restaurants/{id}', [RestaurantController::class, 'destroy']);
   // Edit LocalSemester Article
   Route::put('/localsemester', [LocalSemesterController::class, 'editArticle']);
   // 값이 비었는지 확인
-  Route::middleware(['validate.empty'])->group(function() {
+  // Route::middleware(['validate.empty'])->group(function() {
     // delete LocalSemester Comment
     Route::delete('/localsemestercomments/{id}', [LocalSemesterCommentsController::class, 'deleteComment']);
     // Delete Review
     Route::delete('/review/{id}', [ReviewController::class, 'deleteReview']);
-  });
+  // });
 //});
 
 
 // 값이 비었는지 확인
-Route::middleware(['validate.empty'])->group(function() {
+//Route::middleware(['validate.empty'])->group(function() {
   // Get Review(for edit)
   Route::get('/review/{id}', [ReviewController::class, 'getReviewById']);
   // Get Restaurant Review
   Route::get('/restaurantreview/{restaurant_id}', [ReviewController::class, 'getRestaurantReviews']); 
-});
+//});
 
 
 // Get LocalSemester Comments  

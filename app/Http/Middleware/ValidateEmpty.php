@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use App\Models\Review;
 
-class ValidateReviewGet
+class ValidateEmpty
 {
     /**
      * Handle an incoming request.
