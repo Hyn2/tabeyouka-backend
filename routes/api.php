@@ -21,6 +21,7 @@ Route::group(['middleware' => ['web']], function () {
   Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 });
 
+Route::get('/allusers', [UserController::class, 'getAllUsers']);
 
 // Get Entire List of Restaurants
 Route::get('/restaurants', [RestaurantController::class, 'index']);
@@ -87,9 +88,9 @@ Route::delete('/teammates/{id}', [TeammateController::class, 'destroy']);
   // Route::delete('/community/{id}', [CommunityController::class, 'destroy'])->name('community.destroy');
 // });
 
-Route::middleware(['auth'])->group(function() {
+// Route::middleware(['auth'])->group(function() {
   Route::apiResource('community', CommunityController::class);
-});
+// });
 
 
 // Comment
@@ -98,7 +99,7 @@ Route::middleware(['auth'])->group(function() {
 // Route::patch('comments/{commentId}', [CommentController::class, 'update'])->name('comment.update');
 // Route::delete('comments/{commentId}', [CommentController::class, 'destroy'])->name('comment.destroy');
 
-Route::middleware(['auth'])->group(function() {
+// Route::middleware(['auth'])->group(function() {
   Route::apiResource('community/{community}/comments', CommentController::class)
       ->scoped(['community' => 'id']);
-});
+// });

@@ -71,4 +71,11 @@ class UserController extends Controller
 
         return response()->json(['message' => 'User logged out successfully']);
     }
+
+    public function getAllUsers()
+    {
+        $users = User::all();
+        
+        return response()->json(['users' => $users]);
+    }
 }
