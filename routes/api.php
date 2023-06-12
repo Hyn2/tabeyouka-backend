@@ -33,7 +33,7 @@ Route::delete('/restaurants/{id}', [RestaurantController::class, 'destroy']);
 
 
 // 사용자 인증
-//Route::middleware(['auth'])->group(function() {
+Route::middleware(['auth'])->group(function() {
   // Add Review
   Route::post('/review', [ReviewController::class, 'addReview']);
   // Edit Review
@@ -45,22 +45,22 @@ Route::delete('/restaurants/{id}', [RestaurantController::class, 'destroy']);
   // Edit LocalSemester Article
   Route::put('/localsemester', [LocalSemesterController::class, 'editArticle']);
   // 값이 비었는지 확인
-  // Route::middleware(['validate.empty'])->group(function() {
+  Route::middleware(['validate.empty'])->group(function() {
     // delete LocalSemester Comment
     Route::delete('/localsemestercomments/{id}', [LocalSemesterCommentsController::class, 'deleteComment']);
     // Delete Review
     Route::delete('/review/{id}', [ReviewController::class, 'deleteReview']);
-  // });
-//});
+  });
+});
 
 
 // 값이 비었는지 확인
-//Route::middleware(['validate.empty'])->group(function() {
+Route::middleware(['validate.empty'])->group(function() {
   // Get Review(for edit)
   Route::get('/review/{id}', [ReviewController::class, 'getReviewById']);
   // Get Restaurant Review
   Route::get('/restaurantreview/{restaurant_id}', [ReviewController::class, 'getRestaurantReviews']); 
-//});
+});
 
 
 // Get LocalSemester Comments  
@@ -78,28 +78,13 @@ Route::delete('/teammates/{id}', [TeammateController::class, 'destroy']);
 
 
 // Community
-// Route::middleware(['auth'])->group(function() {
-  // Route::get('/community', [CommunityController::class, 'index'])->name('community.index');
-  // Route::get('/community/create', [CommunityController::class, 'create'])->name('community.create');
-  // Route::post('/community/store', [CommunityController::class, 'store'])->name('community.store');
-  // Route::get('/community/{id}', [CommunityController::class, 'show'])->name('community.show');
-  // Route::get('/community/{id}/edit', [CommunityController::class, 'edit'])->name('community.edit');
-  // Route::put('/community/{id}/update', [CommunityController::class, 'update'])->name('community.update');
-  // Route::delete('/community/{id}', [CommunityController::class, 'destroy'])->name('community.destroy');
-// });
-
-// Route::middleware(['auth'])->group(function() {
+Route::middleware(['auth'])->group(function() {
   Route::apiResource('community', CommunityController::class);
-// });
+});
 
 
 // Comment
-// Route::get('posts/{postId}/comments', [CommentController::class, 'index'])->name('comment.index');
-// Route::post('posts/{postId}/comments', [CommentController::class, 'store'])->name('comment.store');
-// Route::patch('comments/{commentId}', [CommentController::class, 'update'])->name('comment.update');
-// Route::delete('comments/{commentId}', [CommentController::class, 'destroy'])->name('comment.destroy');
-
-// Route::middleware(['auth'])->group(function() {
+Route::middleware(['auth'])->group(function() {
   Route::apiResource('community/{community}/comments', CommentController::class)
       ->scoped(['community' => 'id']);
-// });
+});
