@@ -35,7 +35,15 @@ class TeammateController extends Controller
         $teammate = Teammate::find($id);
 
         if ($teammate) {
-            return response()->json($teammate);
+            return response()->json([
+                'id' => $teammate->id,
+                'profile_image' => $teammate->profile_image,
+                'student_id' => $teammate->student_id,
+                'name' => $teammate->name,
+                'part' => $teammate->part,
+                'description' => $teammate->description,
+                'github_link' => $teammate->github_link,
+            ]);
         } else {
             return response()->json(['error' => 'Teammate not found'], 404);
         }
