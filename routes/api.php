@@ -17,8 +17,13 @@ Route::group(['middleware' => ['web']], function () {
   Route::post('/register', [UserController::class, 'register']);
   // Login User
   Route::post('/login', [UserController::class, 'login']);
+});
+
+Route::middleware(['auth'])->group(function () {
   // Logout User
   Route::post('/logout', [UserController::class, 'logout'])->name('logout');
+  // Get Authenticated User
+  Route::get('/user', [UserController::class, 'getAuthenticatedUser']);
 });
 
 Route::get('/allusers', [UserController::class, 'getAllUsers']);
