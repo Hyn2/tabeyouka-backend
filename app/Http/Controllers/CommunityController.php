@@ -9,7 +9,7 @@ class CommunityController extends Controller
 {
     public function index()
     {
-        $posts = Post::get();
+        $posts = Community::get();
         return response()->json(['posts' => $posts]);
     }
 
