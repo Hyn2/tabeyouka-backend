@@ -78,4 +78,27 @@ class UserController extends Controller
         
         return response()->json(['users' => $users]);
     }
+
+    /**
+     * Retrieve the currently logged in user's information.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAuthenticatedUser(Request $request)
+    {
+        // 세션에서 현재 사용자 ID를 가져옵니다.
+        $userId = $request->session()->get('user_id');
+
+        // 만약 사용자 ID가 세션에 없는 경우, 로그인하지 않은 상태로 판단합니다.
+        if (!$userId) {
+            return response()->json(['message' => 'Not authenticated'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        // 사용자 ID로 유저를 찾습니다.
+        $user = User::find($userId);
+
+        // 찾은 유저 정보를 반환합니다.
+        return response()->json(['user' => $user]);
+    }
 }
