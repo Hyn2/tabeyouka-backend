@@ -101,4 +101,24 @@ class UserController extends Controller
         // 찾은 유저 정보를 반환합니다.
         return response()->json(['user' => $user]);
     }
+
+    /**
+     * Check whether a user is logged in or not.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function isLoggedIn(Request $request)
+    {
+        // 사용자가 로그인했는지 여부를 판단합니다.
+        $isLoggedIn = $request->session()->has('user_id');
+
+        // 로그인한 경우, 로그인 상태 메시지를 반환합니다.
+        if ($isLoggedIn) {
+            return response()->json(['message' => 'User is logged in']);
+        }
+
+        // 로그인하지 않은 경우, 로그아웃 상태 메시지를 반환합니다.
+        return response()->json(['message' => 'User is logged out']);
+    }
 }
