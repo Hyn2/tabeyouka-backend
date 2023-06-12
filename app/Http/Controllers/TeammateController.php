@@ -18,6 +18,7 @@ class TeammateController extends Controller
         $teammates = Teammate::all();
         return response()->json($teammates->map(function ($teammate) {
             return [
+                'id' => $teammate->id,
                 'student_id' => $teammate->student_id,
                 'name' => $teammate->name,
                 'profile_image' => $teammate->profile_image,
