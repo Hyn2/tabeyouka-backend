@@ -9,7 +9,7 @@ class CommunityController extends Controller
 {
     public function index()
     {
-        $posts = Community::with('author')->orderBy('created_at', 'desc')->paginate(10);
+        $posts = Post::get();
         return response()->json(['posts' => $posts]);
     }
 
