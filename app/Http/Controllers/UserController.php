@@ -114,15 +114,35 @@ class UserController extends Controller
      */
     public function getAuthenticatedUser(Request $request)
     {
-        if (!Auth::check()) {
-            return response()->json(['message' => 'Not authenticated'], Response::HTTP_UNAUTHORIZED);
-        }
+        // 세션에서 사용자 ID를 가져옵니다.
+        $userId = $request->session()->get('user_id');
+
+        // 사용자 ID가 없으면 인증되지 않은 것으로 판단하고 오류 응답을 반환합니다.
+        // if (!$userId) {
+        //     return response()->json(['message' => 'Not authenticated'], Response::HTTP_UNAUTHORIZED);
+        // }
 
         // 사용자 ID로 유저를 찾습니다.
-        $user = Auth::user();
+        $user = User::find($userId);
+
+        // 사용자를 찾지 못한 경우 오류 응답을 반환합니다.
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], Response::HTTP_NOT_FOUND);
+        }
 
         // 찾은 유저 정보를 반환합니다.
-        return response()->json(['user' => $user]);
+        return response()->json(['user' => $user])
+        ->withCookie(cookie(
+            'laravel_session',
+            $request->session()->getId(),
+            config('session.lifetime'),
+            config('session.path'),
+            config('session.domain'),
+            config('session.secure'),
+            config('session.http_only'),
+            config('session.same_site'),
+        ))
+        ->header('Access-Control-Allow-Credentials', 'true');
     }
 
     /**
@@ -137,10 +157,23 @@ class UserController extends Controller
         $isLoggedIn = $request->session()->has('user_id');
     
         // 로그인한 경우, 로그인 상태 메시지를 반환합니다.
-        $message = $isLoggedIn ? 'User is logged in' : 'User is logged out';
+        // $message = $isLoggedIn ? 'User is logged in' : 'User is logged out';
     
         // 로그인하지 않은 경우, 로그아웃 상태 메시지를 반환합니다.
-        $response = response()->json(['message' => $message]);
+        // $response = response()->json(['message' => $message]);
+
+        if ($isLoggedIn) {
+            // 로그인한 경우, 로그인 상태 메시지와 함께 사용자 정보를 반환합니다.
+            $userId = $request->session()->get('user_id');
+            $user = User::find($userId);
+            $response = response()->json([
+                'message' => 'User is logged in',
+                'user' => $user,
+            ]);
+        } else {
+            // 로그인하지 않은 경우, 로그아웃 상태 메시지를 반환합니다.
+            $response = response()->json(['message' => 'User is logged out']);
+        }
     
         if ($isLoggedIn) {
             $response->withCookie(cookie(
