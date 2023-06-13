@@ -16,17 +16,7 @@ class TeammateController extends Controller
     public function index()
     {
         $teammates = Teammate::all();
-        return response()->json($teammates->map(function ($teammate) {
-            return [
-                'id' => $teammate->id,
-                'student_id' => $teammate->student_id,
-                'name' => $teammate->name,
-                'profile_image' => $teammate->profile_image,
-                'part' => $teammate->part,
-                'description' => $teammate->description,
-                'github_link' => $teammate->github_link,
-            ];
-        }));
+        return response()->json($teammates);
     }
 
     // 특정 팀원 정보 조회
@@ -84,7 +74,7 @@ class TeammateController extends Controller
         ]);
         $teammate->save();
 
-        return response()->json($teammate);
+        return response()->json($teammate, 201);
     }
 
     /**
@@ -125,7 +115,15 @@ class TeammateController extends Controller
         ];
         $teammate->update($teammate_data);
 
-        return response()->json($teammate);
+        return response()->json([
+            'id' => $teammate->id,
+            'student_id' => $teammate->student_id,
+            'name' => $teammate->name,
+            'profile_image' => $teammate->profile_image,
+            'part' => $teammate->part,
+            'description' => $teammate->description,
+            'github_link' => $teammate->github_link,
+        ]);
     }
 
     /**
