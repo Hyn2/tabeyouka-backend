@@ -12,20 +12,21 @@ use App\Http\Controllers\LocalSemesterController;
 use App\Http\Controllers\LocalSemesterCommentsController;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 
-Route::group(['middleware' => ['web']], function () {
-  // Register User
-  Route::post('/register', [UserController::class, 'register']);
-  // Login User
-  Route::post('/login', [UserController::class, 'login']);
-  // Get Login Status
-  Route::get('/status', [UserController::class, 'getLoginStatus']);
-});
-
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth:sanctum', 'api'])->group(function () {
   // Logout User
   Route::post('/logout', [UserController::class, 'logout'])->name('logout');
   // Get Authenticated User
   Route::get('/user', [UserController::class, 'getAuthenticatedUser']);
+});
+
+// Register User
+Route::post('/register', [UserController::class, 'register']);
+
+Route::middleware(['web'])->group(function () {
+  // Login User
+  Route::post('/login', [UserController::class, 'login']);
+  // Get Login Status
+  Route::get('/status', [UserController::class, 'getLoginStatus']);
 });
 
 Route::get('/allusers', [UserController::class, 'getAllUsers']);
@@ -40,7 +41,7 @@ Route::delete('/restaurants/{id}', [RestaurantController::class, 'destroy']);
 
 
 // 사용자 인증
-Route::middleware(['auth'])->group(function() {
+Route::middleware(['web', 'auth', 'api'])->group(function() {
   // Add Review
   Route::post('/review', [ReviewController::class, 'addReview']);
   // Edit Review
@@ -62,19 +63,19 @@ Route::middleware(['auth'])->group(function() {
 
 
 // 값이 비었는지 확인
-Route::middleware(['validate.empty'])->group(function() {
+Route::middleware(['web', 'api', 'validate.empty'])->group(function() {
   // Get Review(for edit)
   Route::get('/review/{id}', [ReviewController::class, 'getReviewById']);
   // Get Restaurant Review
   Route::get('/restaurantreview/{restaurant_id}', [ReviewController::class, 'getRestaurantReviews']); 
 });
 
-
-// Get LocalSemester Comments  
-Route::get('/localsemestercomments', [LocalSemesterCommentsController::class, 'getComments']);
-// Get LocalSemester Article  
-Route::get('/localsemester', [LocalSemesterController::class, 'getArticle']);
-
+Route::middleware(['web', 'api'])->group(function() {
+  // Get LocalSemester Comments
+  Route::get('/localsemestercomments', [LocalSemesterCommentsController::class, 'getComments']);
+  // Get LocalSemester Article  
+  Route::get('/localsemester', [LocalSemesterController::class, 'getArticle']);
+});
 
 // Teammates
 Route::get('/teammates', [TeammateController::class, 'index']);
@@ -85,13 +86,13 @@ Route::delete('/teammates/{id}', [TeammateController::class, 'destroy']);
 
 
 // Community
-Route::middleware(['auth'])->group(function() {
+Route::middleware(['web', 'auth', 'api'])->group(function() {
   Route::apiResource('community', CommunityController::class);
 });
 
 
 // Comment
-Route::middleware(['auth'])->group(function() {
+Route::middleware(['web', 'auth', 'api'])->group(function() {
   Route::apiResource('community/{community}/comments', CommentController::class)
       ->scoped(['community' => 'id']);
 });
