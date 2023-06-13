@@ -17,6 +17,8 @@ Route::group(['middleware' => ['web']], function () {
   Route::post('/register', [UserController::class, 'register']);
   // Login User
   Route::post('/login', [UserController::class, 'login']);
+  // Get Login Status
+  Route::get('/status', [UserController::class, 'getLoginStatus']);
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -24,8 +26,6 @@ Route::middleware(['auth'])->group(function () {
   Route::post('/logout', [UserController::class, 'logout'])->name('logout');
   // Get Authenticated User
   Route::get('/user', [UserController::class, 'getAuthenticatedUser']);
-  // Get Login Status
-  Route::get('/get-login-status', [UserController::class, 'getLoginStatus']);
 });
 
 Route::get('/allusers', [UserController::class, 'getAllUsers']);
