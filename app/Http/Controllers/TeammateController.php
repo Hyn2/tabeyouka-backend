@@ -92,7 +92,7 @@ class TeammateController extends Controller
         $request->validate([
             'student_id' => 'required',
             'name' => 'required',
-            'profile_image' => 'required',
+            // 'profile_image' => 'required',
             'part' => 'required',
             'description' => 'required',
             'github_link' => 'required',
