@@ -27,8 +27,8 @@ class CommunityController extends Controller
         ]);
 
         if ($request->hasFile('image_file')) {
-            $imageName = $request->image_file->store('public'); // 파일 저장 및 고유 이름 생성
-            $imagePath = 'http://localhost:8080/storage/images/' . basename($imageName);
+            $imageName = $request->image_file->store('public/images/communities'); // 파일 저장 및 고유 이름 생성
+            $imagePath = 'http://localhost:8080/storage/images/communities/' . basename($imageName);
         } else {
             $imageName = null;
         }
@@ -69,8 +69,8 @@ class CommunityController extends Controller
         $post = Community::findOrFail($id);
 
         if ($request->hasFile('image_file')) {
-            $imageName = $request->image_file->store('public'); // 파일 저장 및 고유 이름 생성
-            $imagePath = 'http://localhost:8080/storage/images/' . basename($imageName);
+            $imageName = $request->image_file->store('public/images/communities'); // 파일 저장 및 고유 이름 생성
+            $imagePath = 'http://localhost:8080/storage/images/communities/' . basename($imageName);
         } else {
             $imageName = $post->image; // 이미지 파일이 없으면 예전 이미지를 유지
         }

@@ -67,10 +67,17 @@ class TeammateController extends Controller
             'github_link' => 'required',
         ]);
 
+        if ($request->hasFile('profile_image')) {
+            $imageName = $request->profile_image->store('public/images/teammates');
+            $imagePath = 'http://localhost:8080/storage/images/teammates/' . basename($imageName);
+        } else {
+            $imageName = null;
+        }
+
         $teammate = new Teammate([
             'student_id' => $request->student_id,
             'name' => $request->name,
-            'profile_image' => $request->profile_image,
+            'profile_image' => $imagePath,
             'part' => $request->part,
             'description' => $request->description,
             'github_link' => $request->github_link,
@@ -101,10 +108,17 @@ class TeammateController extends Controller
             'github_link' => 'required',
         ]);
 
+        if ($request->hasFile('profile_image')) {
+            $imageName = $request->profile_image->store('public/images/teammates');
+            $imagePath = 'http://localhost:8080/storage/images/teammates/' . basename($imageName);
+        } else {
+            $imageName = $teammate->profile_image;
+        }
+
         $teammate_data = [
             'student_id' => $request->student_id,
             'name' => $request->name,
-            'profile_image' => $request->profile_image,
+            'profile_image' => $imagePath,
             'part' => $request->part,
             'description' => $request->description,
             'github_link' => $request->github_link,
