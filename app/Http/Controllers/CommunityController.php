@@ -13,11 +13,6 @@ class CommunityController extends Controller
         return response()->json(['posts' => $posts]);
     }
 
-    public function create()
-    {
-        return view('community.create');
-    }
-
     public function store(Request $request)
     {
         $request->validate([
@@ -50,12 +45,6 @@ class CommunityController extends Controller
     {
         $post = Community::with('comments')->findOrFail($id);
         return response()->json(['post' => $post]);
-    }
-
-    public function edit($id)
-    {
-        $post = Community::findOrFail($id);
-        return view('community.edit', ['post' => $post]);
     }
 
     public function update(Request $request, $id)
