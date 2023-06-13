@@ -55,7 +55,27 @@ class UserController extends Controller
         // 세션을 생성하고 현재 사용자의 ID를 저장합니다.
         $request->session()->put('user_id', Auth::id());
 
-        return response()->json(['message' => 'User logged in successfully']);
+        $sessionId = $request->session()->getId();
+
+        $sessionData = $request->session()->all();
+
+        // 세션 리-지너레이션 (고정 공격 방지)
+        $request->session()->regenerate();
+
+        // return response()->json(['message' => 'User logged in successfully', 'session_id' => $sessionId, 'session_data' => $sessionData]);
+        // return response()->json(['message' => 'User logged in successfully']);
+        return response()->json(['message' => 'User logged in successfully'])
+        ->withCookie(cookie(
+            'laravel_session',
+            $request->session()->getId(),
+            config('session.lifetime'),
+            config('session.path'),
+            config('session.domain'),
+            config('session.secure'),
+            config('session.http_only'),
+            config('session.same_site'),
+        ))
+        ->header('Access-Control-Allow-Credentials', 'true');
     }
 
     /**
@@ -69,13 +89,20 @@ class UserController extends Controller
         // 세션에서 사용자의 ID를 제거하여 로그아웃 처리합니다.
         $request->session()->forget('user_id');
 
+        Auth::logout();
+
+        // 세션을 무효화합니다.
+        $request->session()->invalidate();
+
+        // 세션 쿠키를 재생성합니다.
+        $request->session()->regenerateToken();
+
         return response()->json(['message' => 'User logged out successfully']);
     }
 
     public function getAllUsers()
     {
         $users = User::all();
-        
         return response()->json(['users' => $users]);
     }
 
@@ -87,16 +114,12 @@ class UserController extends Controller
      */
     public function getAuthenticatedUser(Request $request)
     {
-        // 세션에서 현재 사용자 ID를 가져옵니다.
-        $userId = $request->session()->get('user_id');
-
-        // 만약 사용자 ID가 세션에 없는 경우, 로그인하지 않은 상태로 판단합니다.
-        if (!$userId) {
+        if (!Auth::check()) {
             return response()->json(['message' => 'Not authenticated'], Response::HTTP_UNAUTHORIZED);
         }
 
         // 사용자 ID로 유저를 찾습니다.
-        $user = User::find($userId);
+        $user = Auth::user();
 
         // 찾은 유저 정보를 반환합니다.
         return response()->json(['user' => $user]);
@@ -112,12 +135,27 @@ class UserController extends Controller
     {
         // 사용자가 로그인했는지 여부를 판단합니다.
         $isLoggedIn = $request->session()->has('user_id');
-        // $isLoggedIn = $request->session()->get('user_id');
-
+    
         // 로그인한 경우, 로그인 상태 메시지를 반환합니다.
         $message = $isLoggedIn ? 'User is logged in' : 'User is logged out';
-
+    
         // 로그인하지 않은 경우, 로그아웃 상태 메시지를 반환합니다.
-        return response()->json(['message' => $message]);
+        $response = response()->json(['message' => $message]);
+    
+        if ($isLoggedIn) {
+            $response->withCookie(cookie(
+                'laravel_session',
+                $request->session()->getId(),
+                config('session.lifetime'),
+                config('session.path'),
+                config('session.domain'),
+                config('session.secure'),
+                config('session.http_only'),
+                config('session.same_site'),
+            ))
+            ->header('Access-Control-Allow-Credentials', 'true');
+        }
+    
+        return $response;
     }
 }
