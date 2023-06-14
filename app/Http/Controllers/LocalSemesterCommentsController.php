@@ -29,7 +29,6 @@ class LocalSemesterCommentsController extends Controller
             return response()->json(['errors' => $errMsg], 422);
         }
 
-   
         $lsComments = new LocalSemesterComments();
         $lsComments -> author_id = Auth::id();
         $lsComments -> comment_text = $validated['comment_text'];
@@ -67,7 +66,11 @@ class LocalSemesterCommentsController extends Controller
         $lsComments = LocalSemesterComments::find($id);
 
         if(!$lsComments) {
-            return response()->json(['message'=> 'Comment was not found'],404);
+            return response()->json(['message'=> 'Comment was not found'], 404);
+        }
+
+        if (Auth::id() != $lsComments->author_id) {
+            return response()->json(['message' => 'Forbidden: You are not the author of this comment'], 403);
         }
 
         if(Auth::id() == $lsComments['author_id']) {
