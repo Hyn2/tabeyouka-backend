@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Community;
+use App\Models\User;
+use Illuminate\Http\Response;
 
 class CommunityController extends Controller
 {
@@ -26,23 +28,39 @@ class CommunityController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $imageName = $request->image->store('public/images/communities'); // 파일 저장 및 고유 이름 생성
-            $imagePath = 'http://localhost:8080/storage/images/communities/' . basename($imageName);
+            $imageName = $request->image->store(self::IMAGE_PATH); // 파일 저장 및 고유 이름 생성
+            $imagePath = self::IMAGE_URL . basename($imageName);
         } else {
             $imagePath = null;
         }
 
+        // if ($request->hasFile('image')) {
+        //     $imageName = $request->image->store('public/images/communities'); // 파일 저장 및 고유 이름 생성
+        //     $imagePath = 'http://localhost:8080/storage/images/communities/' . basename($imageName);
+        // } else {
+        //     $imagePath = null;
+        // }
+
+        // $post = Community::create([
+        //     'author_id' => $request->user()->id,
+        //     'title' => $request->title,
+        //     'text' => $request->text,
+        //     'image' => $this->manageImage($request, $post),
+        //     // 'image' => $imagePath,
+        // ]);
+
+        $post = new Community();
+
+        if (!$request->user()) {
+            return response()->json(['message' => 'User not logged in'], Response::HTTP_UNAUTHORIZED);
+        }
+
         $post = Community::create([
-            'author_id' => auth()->id(),
+            'author_id' => $request->user()->id,
             'title' => $request->title,
             'text' => $request->text,
             'image' => $imagePath,
         ]);
-        // $post = new Community(['author_id' => auth()->id()]);
-        // $post->image = $this->manageImage($request, $post);
-        // $post->title = $request->title;
-        // $post->text = $request->text;
-        // $post->save();
 
         return response()->json(['post_id' => $post->id, 'message' => '게시물이 생성되었습니다.']);
     }
@@ -63,19 +81,20 @@ class CommunityController extends Controller
 
         $post = Community::findOrFail($id);
 
-        // if ($request->hasFile('image')) {
-        //     // 이전 이미지 삭제
-        //     $oldImage = str_replace('http://localhost:8080/storage/', '', $post->image);
-        //     Storage::delete($oldImage);
+        if ($request->hasFile('image')) {
+            // 이전 이미지 삭제
+            $oldImage = str_replace('http://localhost:8080/storage/', '', $post->image);
+            Storage::delete($oldImage);
 
-        //     $imageName = $request->image->store('public/images/communities'); // 파일 저장 및 고유 이름 생성
-        //     $imagePath = 'http://localhost:8080/storage/images/communities/' . basename($imageName);
-        // } else {
-        //     $imageName = $post->image; // 이미지 파일이 없으면 예전 이미지를 유지
-        // }
+            $imageName = $request->image->store('public/images/communities'); // 파일 저장 및 고유 이름 생성
+            $imagePath = 'http://localhost:8080/storage/images/communities/' . basename($imageName);
+        } else {
+            $imagePath = $post->image; // 이미지 파일이 없으면 예전 이미지를 유지
+        }
 
         $post = Community::findOrFail($id);
-        $post->image = $this->manageImage($request, $post);
+        // $post->image = $this->manageImage($request, $post);
+        $post->image = $imagePath;
         $post->title = $request->title;
         $post->text = $request->text;
         $post->update();
@@ -86,10 +105,16 @@ class CommunityController extends Controller
         //     'image' => $imagePath,
         // ]);
 
-        return redirect()->route(
-            'community.show',
-            ['community' => $post->id]
-        )->with('success', '게시물이 업데이트되었습니다.');
+        // TODO: 수정
+        // return redirect()->route(
+        //     'community.show',
+        //     ['community' => $post->id]
+        // )->with('success', '게시물이 업데이트되었습니다.');
+        return response()->json([
+            'post_id' => $post->id,
+            'message' => '게시물이 업데이트되었습니다.',
+            'success' => true,
+        ]);
     }
 
     public function destroy($id)
@@ -97,7 +122,12 @@ class CommunityController extends Controller
         $post = Community::findOrFail($id);
         $post->delete();
 
-        return redirect()->route('community.index')->with('success', '게시물이 삭제되었습니다.');
+        // TODO: 수정
+        // return redirect()->route('community.index')->with('success', '게시물이 삭제되었습니다.');
+        return response()->json([
+            'message' => '게시물이 삭제되었습니다.',
+            'success' => true,
+        ]);
     }
 
     private function manageImage(Request $request, Community $post)
