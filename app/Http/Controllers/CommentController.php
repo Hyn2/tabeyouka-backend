@@ -8,14 +8,14 @@ use App\Models\Community;
 
 class CommentController extends Controller
 {
-    public function index($postId)
+    public function index($post)
     {
-        $comments = Comment::where('post_id', $postId)->get();
+        $comments = Comment::where('post_id', $post)->get();
 
         return response()->json(['comments' => $comments]);
     }
 
-    public function store(Request $request, $postId)
+    public function store(Request $request, $community)
     {
         $request->validate([
             'text' => 'required|string',
@@ -24,13 +24,13 @@ class CommentController extends Controller
         $comment = Comment::create([
             'text' => $request->text,
             'author_id' => auth()->id(),
-            'post_id' => $postId,
+            'post_id' => $community,
         ]);
 
         return response()->json(['comment' => $comment], 201);
     }
 
-    public function update(Request $request, $commentId)
+    public function update(Request $request, $community, $commentId)
     {
         $request->validate([
             'text' => 'required|string',
@@ -49,7 +49,7 @@ class CommentController extends Controller
         return response()->json(['comment' => $comment]);
     }
 
-    public function destroy($commentId)
+    public function destroy($community, $commentId)
     {
         $comment = Comment::findOrFail($commentId);
 
