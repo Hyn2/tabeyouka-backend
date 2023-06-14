@@ -15,30 +15,31 @@ class ReviewController extends Controller
     {
         // request 변수로 입력 정보를 받아서 validate에 정의 된 규칙에 부합한지 판단하고
         // $validate 변수에 저장
-        try {
-            $validated = $request->validate([
-                'restaurant_id' => 'required',
-                'rating' => 'required',
-                'review_text' => 'required|min:10',
-                'image_file' => 'required',
-            ]);
-        } catch (ValidationException $e) {
-            $errMsg = $e->errors();
-            return response()->json(['errors' => $errMsg], 400);
-        }
+       //  try {
 
+        // } catch (ValidationException $e) {
+        //     $errMsg = $e->errors();
+        //     return response()->json(['errors' => 'comment is to short'], 400);
+        // }
+        $validated = $request->validate([
+            'restaurant_id' => 'required',
+            'rating' => 'required',
+            'review_text' => 'required|min:10',
+            'image_file' => 'required',
+        ]);
+        
         // Review 모델의 새로운 인스턴스 생성
         $review = new Review();
         // Auth::id()는 현재 사용자의 ID를 반환함, 그리고 리뷰의 author_id에 저장
         $review->author_id = Auth::id();
         // 'resturant_id 값을 리뷰에 저장'
-        $review->rating = $request['restaurant_id'];
+        $review->rating = $validated['restaurant_id'];
         // 'rating' 필드의 값을 리뷰의 'rating' 속성에 할당
-        $review->rating = $request['rating'];
+        $review->rating = $validated['rating'];
         // 리뷰의 'review_text' 속성에 할당
-        $review->review_text = $request['review_text'];
+        $review->review_text = $validated['review_text'];
         // 파일 업로드 처리
-        $file = $request->file('image_file'); // $file에 저장
+        $file = $validated['image_file']->file('image_file'); // $file에 저장
         $fileName = $file->store('public/images/reviews'); // store()메서드는 지정된 경로에 파일을 저장, 파일명을 fileName에 저장
         $review->image_file = 'http://localhost:8080/storage/image/reviews'.$fileName; // store 메서드를 활용해 저장한 경로가 $path 변수에 할당됨
         // 새 리뷰를 데이터베이스에 저장
