@@ -10,6 +10,11 @@ use Illuminate\Http\Response;
 
 class CommunityController extends Controller
 {
+    // public function __construct()
+    // {
+    //     $this->middleware('auth')->except('index', 'show');
+    // }
+
     const IMAGE_PATH = 'public/images/communities/';
     const IMAGE_URL = 'http://localhost:8080/storage/images/communities/';
 
@@ -22,24 +27,25 @@ class CommunityController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'author_id' => 'required',
             'title' => 'required|max:255',
             'text' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        if ($request->hasFile('image')) {
-            $imageName = $request->image->store(self::IMAGE_PATH); // 파일 저장 및 고유 이름 생성
-            $imagePath = self::IMAGE_URL . basename($imageName);
-        } else {
-            $imagePath = null;
-        }
-
         // if ($request->hasFile('image')) {
-        //     $imageName = $request->image->store('public/images/communities'); // 파일 저장 및 고유 이름 생성
-        //     $imagePath = 'http://localhost:8080/storage/images/communities/' . basename($imageName);
+        //     $imageName = $request->image->store(self::IMAGE_PATH); // 파일 저장 및 고유 이름 생성
+        //     $imagePath = self::IMAGE_URL . basename($imageName);
         // } else {
         //     $imagePath = null;
         // }
+
+        if ($request->hasFile('image')) {
+            $imageName = $request->image->store('public/images/communities'); // 파일 저장 및 고유 이름 생성
+            $imagePath = 'http://localhost:8080/storage/images/communities/' . basename($imageName);
+        } else {
+            $imagePath = null;
+        }
 
         // $post = Community::create([
         //     'author_id' => $request->user()->id,
@@ -49,14 +55,20 @@ class CommunityController extends Controller
         //     // 'image' => $imagePath,
         // ]);
 
-        $post = new Community();
+        // 사용자가 로그인했는지 여부를 판단합니다.
+        // $isLoggedIn = $request->session()->has('user_id');
 
-        if (!$request->user()) {
-            return response()->json(['message' => 'User not logged in'], Response::HTTP_UNAUTHORIZED);
-        }
+        // if (!$isLoggedIn) {
+        //     return response()->json(['message' => 'User not logged in'], Response::HTTP_UNAUTHORIZED);
+        // }
+
+        // 로그인한 경우, 로그인 상태 메시지와 함께 사용자 정보를 반환합니다.
+        // $userId = $request->session()->get('user_id');
+        
+        // $user = User::find($userId);
 
         $post = Community::create([
-            'author_id' => $request->user()->id,
+            'author_id' => $request->author_id,
             'title' => $request->title,
             'text' => $request->text,
             'image' => $imagePath,
