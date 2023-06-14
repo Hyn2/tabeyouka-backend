@@ -102,7 +102,7 @@ class TeammateController extends Controller
             $imageName = $request->profile_image->store('public/images/teammates');
             $imagePath = 'http://localhost:8080/storage/images/teammates/' . basename($imageName);
         } else {
-            $imageName = $teammate->profile_image;
+            $imagePath = $teammate->profile_image;
         }
 
         $teammate_data = [
