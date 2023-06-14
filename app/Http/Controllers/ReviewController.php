@@ -39,8 +39,8 @@ class ReviewController extends Controller
         $review->review_text = $request['review_text'];
         // 파일 업로드 처리
         $file = $request->file('image_file'); // $file에 저장
-        $path = $file->store('photos'); // store()메서드는 지정된 경로에 파일을 저장
-        $review->image_file = $path; // store 메서드를 활용해 저장한 경로가 $path 변수에 할당됨
+        $fileName = $file->store('public/images/reviews'); // store()메서드는 지정된 경로에 파일을 저장, 파일명을 fileName에 저장
+        $review->image_file = 'http://localhost:8080/storage/image/reviews'.$fileName; // store 메서드를 활용해 저장한 경로가 $path 변수에 할당됨
         // 새 리뷰를 데이터베이스에 저장
         $review->save();
         // 데이터베이스에 해당 값이 들어있는지 확인
@@ -123,8 +123,8 @@ class ReviewController extends Controller
         $review->rating = $request['rating'];
         $review->review_text = $request['review_text'];
         $file = $request->file('image_file'); // $file에 저장
-        $path = $file->store('photos'); // store()메서드는 지정된 경로에 파일을 저장
-        $review->image_file = 'http://localhost:8080/storage/app/public/images/review_images'.$path; // store 메서드를 활용해 저장한 경로가 $path 변수에 할당됨
+        $fileName = $file->store('public/images/reviews'); // store()메서드는 지정된 경로에 파일을 저장, 파일명을 fileName에 저장
+        $review->image_file = 'http://localhost:8080/storage/image/reviews'.$fileName; // store 메서드를 활용해 저장한 경로가 $path 변수에 할당됨
         $review->save();
         return response()->json(['message' => 'Edit review successfully']);
     }
