@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Community;
 
 class CommunityController extends Controller
 {
+    const IMAGE_PATH = 'public/images/communities/';
+    const IMAGE_URL = 'http://localhost:8080/storage/images/communities/';
+
     public function index()
     {
         $posts = Community::get();
@@ -18,14 +22,14 @@ class CommunityController extends Controller
         $request->validate([
             'title' => 'required|max:255',
             'text' => 'required',
-            'image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        if ($request->hasFile('image_file')) {
-            $imageName = $request->image_file->store('public/images/communities'); // 파일 저장 및 고유 이름 생성
+        if ($request->hasFile('image')) {
+            $imageName = $request->image->store('public/images/communities'); // 파일 저장 및 고유 이름 생성
             $imagePath = 'http://localhost:8080/storage/images/communities/' . basename($imageName);
         } else {
-            $imageName = null;
+            $imagePath = null;
         }
 
         $post = Community::create([
@@ -34,11 +38,13 @@ class CommunityController extends Controller
             'text' => $request->text,
             'image' => $imagePath,
         ]);
+        // $post = new Community(['author_id' => auth()->id()]);
+        // $post->image = $this->manageImage($request, $post);
+        // $post->title = $request->title;
+        // $post->text = $request->text;
+        // $post->save();
 
-        return redirect()->route(
-            'community.show',
-            ['community' => $post->id]
-        )->with('success', '게시물이 생성되었습니다.');
+        return response()->json(['post_id' => $post->id, 'message' => '게시물이 생성되었습니다.']);
     }
 
     public function show($id)
@@ -52,23 +58,33 @@ class CommunityController extends Controller
         $request->validate([
             'title' => 'required|max:255',
             'text' => 'required',
-            'image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $post = Community::findOrFail($id);
 
-        if ($request->hasFile('image_file')) {
-            $imageName = $request->image_file->store('public/images/communities'); // 파일 저장 및 고유 이름 생성
-            $imagePath = 'http://localhost:8080/storage/images/communities/' . basename($imageName);
-        } else {
-            $imageName = $post->image; // 이미지 파일이 없으면 예전 이미지를 유지
-        }
+        // if ($request->hasFile('image')) {
+        //     // 이전 이미지 삭제
+        //     $oldImage = str_replace('http://localhost:8080/storage/', '', $post->image);
+        //     Storage::delete($oldImage);
 
-        $post->update([
-            'title' => $request->title,
-            'text' => $request->text,
-            'image' => $imagePath,
-        ]);
+        //     $imageName = $request->image->store('public/images/communities'); // 파일 저장 및 고유 이름 생성
+        //     $imagePath = 'http://localhost:8080/storage/images/communities/' . basename($imageName);
+        // } else {
+        //     $imageName = $post->image; // 이미지 파일이 없으면 예전 이미지를 유지
+        // }
+
+        $post = Community::findOrFail($id);
+        $post->image = $this->manageImage($request, $post);
+        $post->title = $request->title;
+        $post->text = $request->text;
+        $post->update();
+
+        // $post->update([
+        //     'title' => $request->title,
+        //     'text' => $request->text,
+        //     'image' => $imagePath,
+        // ]);
 
         return redirect()->route(
             'community.show',
@@ -82,5 +98,21 @@ class CommunityController extends Controller
         $post->delete();
 
         return redirect()->route('community.index')->with('success', '게시물이 삭제되었습니다.');
+    }
+
+    private function manageImage(Request $request, Community $post)
+    {
+        if ($request->hasFile('image')) {
+            if ($post->image) {
+                $oldImage = str_replace(self::IMAGE_URL, '', $post->image);
+                Storage::delete($oldImage);
+            }
+            $imageName = $request->image->store(self::IMAGE_PATH);
+            $imagePath = self::IMAGE_URL . basename($imageName);
+        } else {
+            $imagePath = $post->image;
+        }
+
+        return $imagePath;
     }
 }
