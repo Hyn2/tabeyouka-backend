@@ -11,7 +11,7 @@ class Community extends Model
 
     protected $table = 'communities';
     
-    protected $fillable = ['author_id', 'title', 'text', 'image_file'];
+    protected $fillable = ['author_id', 'title', 'text', 'image'];
 
     public function author()
     {
