@@ -16,7 +16,7 @@ class ReviewController extends Controller
         // request 변수로 입력 정보를 받아서 validate에 정의 된 규칙에 부합한지 판단하고
         // $validate 변수에 저장
        //  try {
-
+        
         // } catch (ValidationException $e) {
         //     $errMsg = $e->errors();
         //     return response()->json(['errors' => 'comment is to short'], 400);
@@ -24,7 +24,7 @@ class ReviewController extends Controller
         $validated = $request->validate([
             'restaurant_id' => 'required',
             'rating' => 'required',
-            'review_text' => 'required|min:10',
+            'review_text' => 'required',
             'image_file' => 'required',
         ]);
         
