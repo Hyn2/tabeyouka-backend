@@ -117,11 +117,6 @@ class UserController extends Controller
         // 세션에서 사용자 ID를 가져옵니다.
         $userId = $request->session()->get('user_id');
 
-        // 사용자 ID가 없으면 인증되지 않은 것으로 판단하고 오류 응답을 반환합니다.
-        // if (!$userId) {
-        //     return response()->json(['message' => 'Not authenticated'], Response::HTTP_UNAUTHORIZED);
-        // }
-
         // 사용자 ID로 유저를 찾습니다.
         $user = User::find($userId);
 
@@ -155,12 +150,6 @@ class UserController extends Controller
     {
         // 사용자가 로그인했는지 여부를 판단합니다.
         $isLoggedIn = $request->session()->has('user_id');
-    
-        // 로그인한 경우, 로그인 상태 메시지를 반환합니다.
-        // $message = $isLoggedIn ? 'User is logged in' : 'User is logged out';
-    
-        // 로그인하지 않은 경우, 로그아웃 상태 메시지를 반환합니다.
-        // $response = response()->json(['message' => $message]);
 
         if ($isLoggedIn) {
             // 로그인한 경우, 로그인 상태 메시지와 함께 사용자 정보를 반환합니다.
