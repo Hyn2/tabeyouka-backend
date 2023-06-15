@@ -13,6 +13,7 @@ class LocalSemesterComments extends Model
 
     protected $fillable = [
         'author_id',
+        'nickname',
         'comment_text',
         'nickname'
     ];

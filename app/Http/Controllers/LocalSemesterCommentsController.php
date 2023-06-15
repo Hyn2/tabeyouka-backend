@@ -22,7 +22,11 @@ class LocalSemesterCommentsController extends Controller
     {
         try {
             $validated = $request->validate(
-                ['comment_text'=>'required']
+                [
+                    'author_id'=>'required',
+                    'nickname'=>'required',
+                    'comment_text'=>'required'
+                ]
             );
         } catch (ValidationException $e) {
             $errMsg = $e->errors();
@@ -30,7 +34,8 @@ class LocalSemesterCommentsController extends Controller
         }
 
         $lsComments = new LocalSemesterComments();
-        $lsComments -> author_id = Auth::id();
+        $lsComments -> author_id = $validated['author_id'];
+        $lsComments -> nickname = $validated['nickname'];
         $lsComments -> comment_text = $validated['comment_text'];
         $lsComments -> save();
         return response()->json(['message' => 'Add comment successfully']);
@@ -42,7 +47,11 @@ class LocalSemesterCommentsController extends Controller
             $validated = $request->validate([
                 'id'=>'required',
                 'author_id'=>'required',
+<<<<<<< HEAD
                 'nickname' => 'required',
+=======
+                'nickname'=>'required',
+>>>>>>> 14a0b16f9e3731c936b9b3a67761a8d9c11f1d0c
                 'comment_text'=>'required',
             ]);
         }
@@ -56,6 +65,8 @@ class LocalSemesterCommentsController extends Controller
         // if(!Auth::id() == $validated['author_id']) {
         //     return response()->json(['message' => 'id is diffrent'], 403);  
         // }
+        $lsComments -> author_id = $validated['author_id'];
+        $lsComments -> nickname = $validated['nickname'];
         $lsComments -> comment_text = $validated['comment_text'];
         $lsComments -> save();
 
