@@ -30,49 +30,26 @@ class CommunityController extends Controller
             'author_id' => 'required',
             'title' => 'required|max:255',
             'text' => 'required',
+            'nickname' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        // if ($request->hasFile('image')) {
-        //     $imageName = $request->image->store(self::IMAGE_PATH); // 파일 저장 및 고유 이름 생성
-        //     $imagePath = self::IMAGE_URL . basename($imageName);
-        // } else {
-        //     $imagePath = null;
-        // }
-
         if ($request->hasFile('image')) {
-            $imageName = $request->image->store('public/images/communities'); // 파일 저장 및 고유 이름 생성
+            $imageName = $request->image->store('public/images/communities');
             $imagePath = 'http://localhost:8080/storage/images/communities/' . basename($imageName);
         } else {
             $imagePath = null;
         }
 
-        // $post = Community::create([
-        //     'author_id' => $request->user()->id,
-        //     'title' => $request->title,
-        //     'text' => $request->text,
-        //     'image' => $this->manageImage($request, $post),
-        //     // 'image' => $imagePath,
-        // ]);
-
-        // 사용자가 로그인했는지 여부를 판단합니다.
-        // $isLoggedIn = $request->session()->has('user_id');
-
-        // if (!$isLoggedIn) {
-        //     return response()->json(['message' => 'User not logged in'], Response::HTTP_UNAUTHORIZED);
-        // }
-
-        // 로그인한 경우, 로그인 상태 메시지와 함께 사용자 정보를 반환합니다.
-        // $userId = $request->session()->get('user_id');
-        
-        // $user = User::find($userId);
-
-        $post = Community::create([
+        $post = new Community([
             'author_id' => $request->author_id,
             'title' => $request->title,
             'text' => $request->text,
+            'nickname' => $request->nickname,
             'image' => $imagePath,
         ]);
+
+        $post->save();
 
         return response()->json(['post_id' => $post->id, 'message' => '게시물이 생성되었습니다.']);
     }
