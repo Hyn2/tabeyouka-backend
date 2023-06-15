@@ -16,12 +16,14 @@ class ReviewController extends Controller
         // request 변수로 입력 정보를 받아서 validate에 정의 된 규칙에 부합한지 판단하고
         // $validate 변수에 저장
        //  try {
-        
+
         // } catch (ValidationException $e) {
         //     $errMsg = $e->errors();
         //     return response()->json(['errors' => 'comment is to short'], 400);
         // }
         $validated = $request->validate([
+            'author_id' => 'required',
+            'nickname' => 'required',
             'restaurant_id' => 'required',
             'rating' => 'required',
             'review_text' => 'required',
@@ -31,17 +33,18 @@ class ReviewController extends Controller
         // Review 모델의 새로운 인스턴스 생성
         $review = new Review();
         // Auth::id()는 현재 사용자의 ID를 반환함, 그리고 리뷰의 author_id에 저장
-        $review->author_id = Auth::id();
+        $review->author_id = $validated['author_id'];
+        $review->nickname = $validated['nickname'];
         // 'resturant_id 값을 리뷰에 저장'
-        $review->rating = $validated['restaurant_id'];
+        $review->restaurant_id = $validated['restaurant_id'];
         // 'rating' 필드의 값을 리뷰의 'rating' 속성에 할당
         $review->rating = $validated['rating'];
         // 리뷰의 'review_text' 속성에 할당
         $review->review_text = $validated['review_text'];
         // 파일 업로드 처리
-        $file = $validated['image_file']->file('image_file'); // $file에 저장
-        $fileName = $file->store('public/images/reviews'); // store()메서드는 지정된 경로에 파일을 저장, 파일명을 fileName에 저장
-        $review->image_file = 'http://localhost:8080/storage/image/reviews'.$fileName; // store 메서드를 활용해 저장한 경로가 $path 변수에 할당됨
+        $fileName = $validated['image_file']-> store('public/images/reviews'); // $file에 저장
+
+        $review->image_file = 'http://localhost:8080/storage/images/reviews'.$fileName; // store 메서드를 활용해 저장한 경로가 $path 변수에 할당됨
         // 새 리뷰를 데이터베이스에 저장
         $review->save();
         // 데이터베이스에 해당 값이 들어있는지 확인
@@ -62,9 +65,8 @@ class ReviewController extends Controller
             return response()->json(['message' => 'Review was not found'], 404);
         }
         // 2. 리뷰 삭제 실행
-        if (Auth::id() == $review['author_id']) {
-            $review->delete();
-        }
+        $review->delete();
+
         // 데이터베이스에 해당 값이 삭제되었는지 확인
         // 3. 성공 응답 반환
         return response()->json(['message' => 'Review deleted successfully']);
@@ -86,6 +88,7 @@ class ReviewController extends Controller
         $review = Review::select(
             'id',
             'author_id',
+            'nickname',
             'restaurant_id',
             'rating',
             'review_text',
