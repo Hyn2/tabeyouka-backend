@@ -16,8 +16,6 @@ use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 Route::middleware(['web'])->group(function () { // TODO: 로그인한 유저만 가능하게 변경
   // Logout User
   Route::post('/logout', [UserController::class, 'logout'])->name('logout');
-  // Get Authenticated User
-  // Route::get('/user', [UserController::class, 'getAuthenticatedUser']);
 });
 
 // Register User
