@@ -10,11 +10,6 @@ use Illuminate\Http\Response;
 
 class CommunityController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware('auth')->except('index', 'show');
-    // }
-
     const IMAGE_PATH = 'public/images/communities/';
     const IMAGE_URL = 'http://localhost:8080/storage/images/communities/';
 
@@ -82,23 +77,13 @@ class CommunityController extends Controller
         }
 
         $post = Community::findOrFail($id);
-        // $post->image = $this->manageImage($request, $post);
+
         $post->image = $imagePath;
         $post->title = $request->title;
         $post->text = $request->text;
+
         $post->update();
 
-        // $post->update([
-        //     'title' => $request->title,
-        //     'text' => $request->text,
-        //     'image' => $imagePath,
-        // ]);
-
-        // TODO: 수정
-        // return redirect()->route(
-        //     'community.show',
-        //     ['community' => $post->id]
-        // )->with('success', '게시물이 업데이트되었습니다.');
         return response()->json([
             'post_id' => $post->id,
             'message' => '게시물이 업데이트되었습니다.',
@@ -111,8 +96,6 @@ class CommunityController extends Controller
         $post = Community::findOrFail($id);
         $post->delete();
 
-        // TODO: 수정
-        // return redirect()->route('community.index')->with('success', '게시물이 삭제되었습니다.');
         return response()->json([
             'message' => '게시물이 삭제되었습니다.',
             'success' => true,
