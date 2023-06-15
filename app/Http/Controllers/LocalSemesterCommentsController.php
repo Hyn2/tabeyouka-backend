@@ -12,7 +12,7 @@ class LocalSemesterCommentsController extends Controller
     // 모든 댓글 불러오기
     public function getComments()
     {
-        $columns = ['id', 'author_id', 'comment_text'];
+        $columns = ['id', 'author_id', 'nickname', 'comment_text'];
         $lsComments = LocalSemesterComments::select($columns)->get();
 
         return response()->json($lsComments);
@@ -42,6 +42,7 @@ class LocalSemesterCommentsController extends Controller
             $validated = $request->validate([
                 'id'=>'required',
                 'author_id'=>'required',
+                'nickname' => 'required',
                 'comment_text'=>'required',
             ]);
         }
