@@ -107,40 +107,6 @@ class UserController extends Controller
     }
 
     /**
-     * Retrieve the currently logged in user's information.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getAuthenticatedUser(Request $request)
-    {
-        // 세션에서 사용자 ID를 가져옵니다.
-        $userId = $request->session()->get('user_id');
-
-        // 사용자 ID로 유저를 찾습니다.
-        $user = User::find($userId);
-
-        // 사용자를 찾지 못한 경우 오류 응답을 반환합니다.
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], Response::HTTP_NOT_FOUND);
-        }
-
-        // 찾은 유저 정보를 반환합니다.
-        return response()->json(['user' => $user])
-        ->withCookie(cookie(
-            'laravel_session',
-            $request->session()->getId(),
-            config('session.lifetime'),
-            config('session.path'),
-            config('session.domain'),
-            config('session.secure'),
-            config('session.http_only'),
-            config('session.same_site'),
-        ))
-        ->header('Access-Control-Allow-Credentials', 'true');
-    }
-
-    /**
      * Check whether a user is logged in or not.
      *
      * @param Request $request
