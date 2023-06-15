@@ -13,14 +13,6 @@ class ReviewController extends Controller
     // 리뷰 추가
     public function addReview(Request $request)
     {
-        // request 변수로 입력 정보를 받아서 validate에 정의 된 규칙에 부합한지 판단하고
-        // $validate 변수에 저장
-       //  try {
-
-        // } catch (ValidationException $e) {
-        //     $errMsg = $e->errors();
-        //     return response()->json(['errors' => 'comment is to short'], 400);
-        // }
         $validated = $request->validate([
             'author_id' => 'required',
             'nickname' => 'required',

@@ -12,6 +12,7 @@ use App\Http\Controllers\LocalSemesterController;
 use App\Http\Controllers\LocalSemesterCommentsController;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 
+// Get Authenticated User
 Route::middleware(['web'])->group(function () { // TODO: 로그인한 유저만 가능하게 변경
   // Logout User
   Route::post('/logout', [UserController::class, 'logout'])->name('logout');
@@ -22,6 +23,7 @@ Route::middleware(['web'])->group(function () { // TODO: 로그인한 유저만 
 // Register User
 Route::post('/register', [UserController::class, 'register']);
 
+// Login User
 Route::middleware(['web'])->group(function () {
   // Login User
   Route::post('/login', [UserController::class, 'login']);
@@ -39,8 +41,7 @@ Route::post('/restaurants', [RestaurantController::class, 'store']);
 Route::put('/restaurants/{id}', [RestaurantController::class, 'update']);
 Route::delete('/restaurants/{id}', [RestaurantController::class, 'destroy']);
 
-
-// 사용자 인증
+// Get Entire List of Reviews
 Route::middleware(['web', 'api'])->group(function() { // TODO: 로그인한 유저만 가능하게 변경
   // Add Review
   Route::post('/review', [ReviewController::class, 'addReview']);
@@ -52,17 +53,14 @@ Route::middleware(['web', 'api'])->group(function() { // TODO: 로그인한 유�
   Route::patch('/localsemestercomments', [LocalSemesterCommentsController::class, 'editComment']);
   // Edit LocalSemester Article
   Route::put('/localsemester', [LocalSemesterController::class, 'editArticle']);
-  // 값이 비었는지 확인
-  // Route::middleware(['validate.empty'])->group(function() {
-    // delete LocalSemester Comment
-    Route::delete('/localsemestercomments/{id}', [LocalSemesterCommentsController::class, 'deleteComment']);
-    // Delete Review
-    Route::delete('/review/{id}', [ReviewController::class, 'deleteReview']);
-  // });
+  // delete LocalSemester Comment
+  Route::delete('/localsemestercomments/{id}', [LocalSemesterCommentsController::class, 'deleteComment']);
+  // Delete Review
+  Route::delete('/review/{id}', [ReviewController::class, 'deleteReview']);
 });
 
 
-// 값이 비었는지 확인
+// Get Entire List of Reviews
 Route::middleware(['web', 'api', 'validate.empty'])->group(function() {
   // Get Review(for edit)
   Route::get('/review/{id}', [ReviewController::class, 'getReviewById']);
@@ -70,6 +68,7 @@ Route::middleware(['web', 'api', 'validate.empty'])->group(function() {
   Route::get('/restaurantreview/{restaurant_id}', [ReviewController::class, 'getRestaurantReviews']); 
 });
 
+// Get Entire List of LocalSemester
 Route::middleware(['web', 'api'])->group(function() { // TODO: 로그인한 유저만 가능하게 변경
   // Get LocalSemester Comments
   Route::get('/localsemestercomments', [LocalSemesterCommentsController::class, 'getComments']);
@@ -77,33 +76,43 @@ Route::middleware(['web', 'api'])->group(function() { // TODO: 로그인한 유�
   Route::get('/localsemester', [LocalSemesterController::class, 'getArticle']);
 });
 
-// Teammates
+// Get Entire List of Teammates
 Route::middleware(['web', 'api'])->group(function() {
+  // Get Teammates
   Route::get('/teammates', [TeammateController::class, 'index']);
+  // Get Specific Teammate
   Route::get('/teammates/{id}', [TeammateController::class, 'show']);
+  // Create Teammate
   Route::post('/teammates', [TeammateController::class, 'store']);  // TODO: 관리자 권한 부여
+  // Update Teammate
   Route::match(['put', 'post'], '/teammates/{id}', [TeammateController::class, 'update'])->name('teammates.update');  // TODO: 관리자 권한 부여
+  // Delete Teammate
   Route::delete('/teammates/{id}', [TeammateController::class, 'destroy']);
 });
 
-// Community
+// Get Entire List of Community
 Route::middleware(['web', 'api'])->group(function() {
+  // Get Community
   Route::get('/community', [CommunityController::class, 'index']);
+  // Create Community
   Route::post('/community', [CommunityController::class, 'store']); // TODO: 로그인한 유저만 가능하게 변경
+  // Get Specific Community
   Route::get('/community/{community}', [CommunityController::class, 'show']);
-  // Route::put('/community/{community}', [CommunityController::class, 'update']);
+  // Update Community
   Route::match(['put', 'post'], '/community/{community}', [CommunityController::class, 'update'])->name('community.update');  // TODO: 로그인한 유저만 가능하게 변경
+  // Delete Community
   Route::delete('/community/{community}', [CommunityController::class, 'destroy']); // TODO: 로그인한 유저만 가능하게 변경
 });
 
 
-// Comment
+// Get Entire List of Comments
 Route::middleware(['web', 'api'])->group(function() {
-  // Route::apiResource('community/{community}/comments', CommentController::class)
-  //     ->scoped(['community' => 'id']);
+  // Get Comments
   Route::get('/post/{post}/comments', [CommentController::class, 'index']); 
+  // Create Comment
   Route::post('/post/{post}/comments', [CommentController::class, 'store']);  // TODO: 로그인한 유저만 가능하게 변경
+  // Update Comment
   Route::match(['put', 'post'], '/post/{post}/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');  // TODO: 로그인한 유저만 가능하게 변경
-  // Route::put('/post/{post}/comments/{comment}', [CommentController::class, 'update']);
+  // Delete Comment
   Route::delete('/post/{post}/comments/{comment}', [CommentController::class, 'destroy']);  // TODO: 로그인한 유저만 가능하게 변경
 });

@@ -15,5 +15,6 @@ class LocalSemesterComments extends Model
         'author_id',
         'nickname',
         'comment_text',
+        'nickname'
     ];
 }
