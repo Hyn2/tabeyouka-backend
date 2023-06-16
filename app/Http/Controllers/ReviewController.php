@@ -111,26 +111,30 @@ class ReviewController extends Controller
     {
         // request 변수로 입력 정보를 받아서 validate에 정의 된 규칙에 부합한지 판단하고
         // $validate 변수에 저장
-        try {
-            $validated = $request->validate([
-                'id' => 'required',
-                'author_id' => 'required',
-                'nickname' => 'required',
-                'rating' => 'required',
-                'review_text' => 'required|min:10',
-                'image_file' => 'required',
-            ]);
-        } catch (ValidationException $e) {
-            $errMsg = $e->errors();
-            return response()->json(['errors' => $errMsg]);
-        }
+        // try {
+        //     $validated = $request->validate([
+        //         'id' => 'required',
+        //         'author_id' => 'required',
+        //         'nickname' => 'required',
+        //         'rating' => 'required',
+        //         'review_text' => 'required|min:10',
+        //         'image_file' => 'required',
+        //     ]);
+        // } catch (ValidationException $e) {
+        //     $errMsg = $e->errors();
+        //     return response()->json(['errors' => $errMsg]);
+        // }
         $review = Review::find($request['id']);
         // 정보 갱신
         $review->rating = $request['rating'];
         $review->review_text = $request['review_text'];
-        $file = $request->image_file->store('public/images/reviews');
-        $fileName = 'http://localhost:8080/storage/image/reviews'.basename($file);// store()메서드는 지정된 경로에 파일을 저장, 파일명을 fileName에 저장
-        $review->image_file = $fileName;  // store 메서드를 활용해 저장한 경로가 $path 변수에 할당됨
+        if($request->hasFile('image_file')) {
+            $fileName = $request->image_file->store('public/images/reviews'); // $file에 저장
+            $filePath = 'http://localhost:8080/storage/images/reviews/'.basename($fileName);
+            $review->image_file = $filePath; // store 메서드를 활용해 저장한 경로가 $path 변수에 할당됨
+        } else {
+            $review->image_file = 'IMAGEDESU';
+        }
         $review->update();
         return response()->json(['message' => 'Edit review successfully']);
     }
