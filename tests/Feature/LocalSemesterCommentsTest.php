@@ -27,48 +27,28 @@ class LocalSemesterCommentsTest extends TestCase
 
     public function test_add_comment_successfully()
     {
-        $user = User::create([
-            'email' => 'test@example.com',
-            'nickname' => 'test-nickname',
-            'password' => bcrypt('password'),
-          ]);
-        $data = [
-            'comment_text' => 'awesome'
-        ];
+        $user = User::factory()->create();
+        $data = LocalSemesterComments::factory()->create();
 
-        $response = $this->actingAs($user)->postJson("/api/localsemestercomments",$data);
+        $response = $this->actingAs($user)->postJson("/api/localsemestercomments",$data->toArray());
 
         $response->assertStatus(200)->assertJson(['message' => 'Add comment successfully']);
     }
 
     public function test_edit_comment_successfully()
     {   
-        $user = User::create([
-            'email' => 'test@example.com',
-            'nickname' => 'test-nickname',
-            'password' => bcrypt('password'),
-          ]);
-
-        $data = [
-            'id'=>1,
-            'author_id'=>1,
-            'comment_text' => 'awesome',
-        ];
+        $user = User::factory()->create();
 
         $lsComments = LocalSemesterComments::factory()->create();
 
-        $response = $this->actingAs($user)->patchJson("/api/localsemestercomments",$data);
+        $response = $this->actingAs($user)->patchJson("/api/localsemestercomments",$lsComments->toArray());
 
         $response->assertStatus(200)->assertJson(['message' => 'Edit comment successfully']);
     }
 
     public function test_delete_comment_successfully()
     {
-        $user = User::create([
-            'email' => 'test@example.com',
-            'nickname' => 'test-nickname',
-            'password' => bcrypt('password'),
-          ]);
+        $user = User::factory()->create();
 
         $lsComments = LocalSemesterComments::factory()->create();
 
