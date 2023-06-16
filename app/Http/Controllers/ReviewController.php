@@ -13,30 +13,30 @@ class ReviewController extends Controller
     // 리뷰 추가
     public function addReview(Request $request)
     {
-        $validated = $request->validate([
-            'author_id' => 'required',
-            'nickname' => 'required',
-            'restaurant_id' => 'required',
-            'rating' => 'required',
-            'review_text' => 'required',
-            'image_file' => 'required',
-        ]);
+        // $validated = $request->validate([
+        //     'author_id' => 'required',
+        //     'nickname' => 'required',
+        //     'restaurant_id' => 'required',
+        //     'rating' => 'required',
+        //     'review_text' => 'required',
+        //     'image_file' => 'required',
+        // ]);
         
         // Review 모델의 새로운 인스턴스 생성
         $review = new Review();
         // Auth::id()는 현재 사용자의 ID를 반환함, 그리고 리뷰의 author_id에 저장
-        $review->author_id = $validated['author_id'];
-        $review->nickname = $validated['nickname'];
+        $review->author_id = $request['author_id'];
+        $review->nickname = $request['nickname'];
         // 'resturant_id 값을 리뷰에 저장'
-        $review->restaurant_id = $validated['restaurant_id'];
+        $review->restaurant_id = $request['restaurant_id'];
         // 'rating' 필드의 값을 리뷰의 'rating' 속성에 할당
-        $review->rating = $validated['rating'];
+        $review->rating = $request['rating'];
         // 리뷰의 'review_text' 속성에 할당
-        $review->review_text = $validated['review_text'];
+        $review->review_text = $request['review_text'];
         // 파일 업로드 처리
-        $fileName = $validated['image_file']-> store('public/images/reviews'); // $file에 저장
+        $fileName = $request['image_file']-> store('public/images/reviews'); // $file에 저장
 
-        $review->image_file = 'http://localhost:8080/storage/images/reviews'.$fileName; // store 메서드를 활용해 저장한 경로가 $path 변수에 할당됨
+        $review->image_file = 'http://localhost:8080/storage/images/reviews/'.$fileName; // store 메서드를 활용해 저장한 경로가 $path 변수에 할당됨
         // 새 리뷰를 데이터베이스에 저장
         $review->save();
         // 데이터베이스에 해당 값이 들어있는지 확인
