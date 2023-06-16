@@ -88,12 +88,6 @@ class ReviewController extends Controller
         )
             ->where('id', $id)
             ->firstOrFail();
-        // 행의 author_id 값을 받음
-        $authorId = $review->author_id;
-        // 현재 사용자의 id값을 받아 비교
-        if (!($authorId == Auth::id())) {
-            return response()->json(['message' => 'id is not correct'], 401);
-        }
         // 일치하면 반환
         return response()->json(['review' => $review]);
     }
@@ -106,13 +100,15 @@ class ReviewController extends Controller
         try {
             $validated = $request->validate([
                 'id' => 'required',
+                'author_id' => 'required',
+                'nickname' => 'required',
                 'rating' => 'required',
                 'review_text' => 'required|min:10',
                 'image_file' => 'required',
             ]);
         } catch (ValidationException $e) {
             $errMsg = $e->errors();
-            return response()->json(['errors' => $errMsg], 400);
+            return response()->json(['errors' => $errMsg]);
         }
         $review = Review::find($request['id']);
         // 정보 갱신
@@ -121,7 +117,7 @@ class ReviewController extends Controller
         $file = $request->file('image_file'); // $file에 저장
         $fileName = $file->store('public/images/reviews'); // store()메서드는 지정된 경로에 파일을 저장, 파일명을 fileName에 저장
         $review->image_file = 'http://localhost:8080/storage/image/reviews'.$fileName; // store 메서드를 활용해 저장한 경로가 $path 변수에 할당됨
-        $review->save();
+        $review->update();
         return response()->json(['message' => 'Edit review successfully']);
     }
 

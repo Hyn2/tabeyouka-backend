@@ -18,27 +18,14 @@ class ReviewControllerTest extends TestCase
   /** @test */
   public function test_adds_review_successfully()
   {
-    // Arrange
-    // 유저 생성
-    $user = User::create([
-      'email' => 'test@example.com',
-      'nickname' => 'test-nickname',
-      'password' => bcrypt('password'),
-    ]);
+    $user = User::factory()->create();
 
-    $data = [
-      'restaurant_id' => 1,
-      'rating' => 4,
-      'review_text' => 'This is a great restaurant.',
-      // UploadedFile::fake() : 파일 업로드
-      // image(test-image.jpg) : 이미지 파일
-      'image_file' => UploadedFile::fake()->image('test-image.jpg'),
-    ];
+    $review = Review::factory()->create();
 
     // Act
     // actingAs() 메서드를 사용하여 특정사용자로 로그인한 상태를 시뮬레이션 할 수 있음
     $response = $this->actingAs($user)
-      ->postJson("/api/review", $data);
+      ->postJson("/api/review", $review->toArray());
 
     // Assert
     // 상태코드가 200인지 확인, 응답본문이 같은지 확인
@@ -50,11 +37,7 @@ class ReviewControllerTest extends TestCase
   public function test_deletes_review_successfully()
   {
     // Arrange
-    $user = User::create([
-      'email' => 'test@example.com',
-      'nickname' => 'test-nickname',
-      'password' => bcrypt('password'),
-    ]);
+    $user = User::factory()->create();
     $review = Review::factory()->create();
 
     // Act
@@ -78,6 +61,7 @@ class ReviewControllerTest extends TestCase
         'review' => [
           'id' => $review->id,
           'author_id' => $review->author_id,
+          'nickname' => $review->nickname,
           'restaurant_id' => $review->restaurant_id,
           'rating' => $review->rating,
           'review_text' => $review->review_text,
@@ -89,26 +73,12 @@ class ReviewControllerTest extends TestCase
   public function test_edit_review_successfully()
   {
     // Arrange
-    $user = User::create([
-      'email' => 'test@example.com',
-      'nickname' => 'test-nickname',
-      'password' => bcrypt('password'),
-    ]);
-    
+    $user = User::factory()->create();
     $review = Review::factory()->create();
-    $data = [
-      'id' => $review->id,
-      'restaurant_id'=>1,
-      'rating' => 1,
-      'review_text' => 'veryveryveryvery delicious',
-      // UploadedFile::fake() : 파일 업로드
-      // image(test-image.jpg) : 이미지 파일
-      'image_file' => UploadedFile::fake()->image('test-image.jpg'),
-    ];
 
     // 테스트할 리뷰 수정 요청
     $response = $this->actingAs($user)
-    ->patchJson("/api/review", $data);
+    ->patchJson("/api/review", $review->toArray());
 
 
     // 응답 상태 코드 확인
