@@ -18,6 +18,7 @@ class LocalSemesterCommentsFactory extends Factory
     {
         return [
             'author_id'=>$this->faker->numberBetween(1, 5),
+            'nickname'=>$this->faker->name(),
             'comment_text'=>$this->faker->paragraph(),
         ];
     }

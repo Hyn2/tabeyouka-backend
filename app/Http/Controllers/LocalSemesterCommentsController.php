@@ -74,14 +74,8 @@ class LocalSemesterCommentsController extends Controller
         if(!$lsComments) {
             return response()->json(['message'=> 'Comment was not found'], 404);
         }
-
-        if (Auth::id() != $lsComments->author_id) {
-            return response()->json(['message' => 'Forbidden: You are not the author of this comment'], 403);
-        }
-
-        if(Auth::id() == $lsComments['author_id']) {
-            $lsComments->delete();
-        }
+        
+        $lsComments->delete();
 
         return response()->json(['message' => 'Delete comment successfully']);
     }
