@@ -32,7 +32,6 @@ class ReviewController extends Controller
             'restaurant_id'=>$request->restaurant_id,
             'rating'=>$request->rating,
             'review_text'=>$request->review_text,
-            'image_file'=>'IMAGEDESU',
         ]);
         // Auth::id()는 현재 사용자의 ID를 반환함, 그리고 리뷰의 author_id에 저장
         // $review->author_id = $request->author_id;
@@ -44,8 +43,14 @@ class ReviewController extends Controller
         // // 리뷰의 'review_text' 속성에 할당
         // $review->review_text = $request->review_text;
         // 파일 업로드 처리
-        // $fileName = $request->image_file->store('public/images/reviews'); // $file에 저장
-        // $review->image_file = 'http://localhost:8080/storage/images/reviews/'.$fileName; // store 메서드를 활용해 저장한 경로가 $path 변수에 할당됨
+        if($request->hasFile('image_file')) {
+            $fileName = $request->image_file->store('public/images/reviews'); // $file에 저장
+            $filePath = 'http://localhost:8080/storage/images/reviews/'.basename($fileName);
+            $review->image_file = $filePath; // store 메서드를 활용해 저장한 경로가 $path 변수에 할당됨
+        } else {
+            $review->image_file = 'IMAGEDESU';
+        }
+       
         // 새 리뷰를 데이터베이스에 저장
         $review->save();
         // 데이터베이스에 해당 값이 들어있는지 확인
@@ -123,9 +128,9 @@ class ReviewController extends Controller
         // 정보 갱신
         $review->rating = $request['rating'];
         $review->review_text = $request['review_text'];
-        $file = $request->file('image_file'); // $file에 저장
-        $fileName = $file->store('public/images/reviews'); // store()메서드는 지정된 경로에 파일을 저장, 파일명을 fileName에 저장
-        $review->image_file = 'http://localhost:8080/storage/image/reviews'.$fileName; // store 메서드를 활용해 저장한 경로가 $path 변수에 할당됨
+        $file = $request->image_file->store('public/images/reviews');
+        $fileName = 'http://localhost:8080/storage/image/reviews'.basename($file);// store()메서드는 지정된 경로에 파일을 저장, 파일명을 fileName에 저장
+        $review->image_file = $fileName;  // store 메서드를 활용해 저장한 경로가 $path 변수에 할당됨
         $review->update();
         return response()->json(['message' => 'Edit review successfully']);
     }
@@ -142,6 +147,6 @@ class ReviewController extends Controller
         // 받은 $restaurant_id 기반으로 테이블의 restaurant_id와 일치하는 데이터를 가져옴
          $reviews = Review::WHERE('restaurant_id', $restaurant_id)->get();
 
-        return response()->json($reviews);
+        return response()->json(['reviews' => $reviews]);
     }
 }
