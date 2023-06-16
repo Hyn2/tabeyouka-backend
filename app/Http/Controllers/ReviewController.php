@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Review;
 use App\Models\Restaurant;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -21,14 +22,16 @@ class ReviewController extends Controller
         //     'review_text' => 'required',
         //     'image_file' => 'required',
         // ]);
+        $user = User::find($request['author_id']);
+        $restaurant = Restaurant::find($request['restaurant_id']);
         
         // Review 모델의 새로운 인스턴스 생성
         $review = new Review();
         // Auth::id()는 현재 사용자의 ID를 반환함, 그리고 리뷰의 author_id에 저장
-        $review->author_id = $request['author_id'];
+        $review->author_id = $user->id;
         $review->nickname = $request['nickname'];
         // 'resturant_id 값을 리뷰에 저장'
-        $review->restaurant_id = $request['restaurant_id'];
+        $review->restaurant_id = $restaurant->id;
         // 'rating' 필드의 값을 리뷰의 'rating' 속성에 할당
         $review->rating = $request['rating'];
         // 리뷰의 'review_text' 속성에 할당

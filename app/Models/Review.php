@@ -18,4 +18,14 @@ class Review extends Model
         'review_text', 
         'image_file'
     ];
+
+    public function author()
+    {
+        return $this->belongsTo(User::class, 'author_id');
+    }
+
+    public function restaurant()
+    {
+        return $this->belongsTo(User::class, 'restaurant_id');
+    }
 }
