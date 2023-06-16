@@ -26,20 +26,26 @@ class ReviewController extends Controller
         $restaurant = Restaurant::find($request['restaurant_id']);
         
         // Review 모델의 새로운 인스턴스 생성
-        $review = new Review();
+        $review = new Review([
+            'author_id' => $request->author_id,
+            'nickname'=> $request->nickname,
+            'restaurant_id'=>$request->restaurant_id,
+            'rating'=>$request->rating,
+            'review_text'=>$request->review_text,
+            'image_file'=>'IMAGEDESU',
+        ]);
         // Auth::id()는 현재 사용자의 ID를 반환함, 그리고 리뷰의 author_id에 저장
-        $review->author_id = $user->id;
-        $review->nickname = $request['nickname'];
-        // 'resturant_id 값을 리뷰에 저장'
-        $review->restaurant_id = $restaurant->id;
-        // 'rating' 필드의 값을 리뷰의 'rating' 속성에 할당
-        $review->rating = $request['rating'];
-        // 리뷰의 'review_text' 속성에 할당
-        $review->review_text = $request['review_text'];
+        // $review->author_id = $request->author_id;
+        // $review->nickname = $request->nickname;
+        // // 'resturant_id 값을 리뷰에 저장'
+        // $review->restaurant_id = $restaurant->id;
+        // // 'rating' 필드의 값을 리뷰의 'rating' 속성에 할당
+        // $review->rating = $request->rating;
+        // // 리뷰의 'review_text' 속성에 할당
+        // $review->review_text = $request->review_text;
         // 파일 업로드 처리
-        $fileName = $request['image_file']-> store('public/images/reviews'); // $file에 저장
-
-        $review->image_file = 'http://localhost:8080/storage/images/reviews/'.$fileName; // store 메서드를 활용해 저장한 경로가 $path 변수에 할당됨
+        // $fileName = $request->image_file->store('public/images/reviews'); // $file에 저장
+        // $review->image_file = 'http://localhost:8080/storage/images/reviews/'.$fileName; // store 메서드를 활용해 저장한 경로가 $path 변수에 할당됨
         // 새 리뷰를 데이터베이스에 저장
         $review->save();
         // 데이터베이스에 해당 값이 들어있는지 확인
