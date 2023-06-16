@@ -17,6 +17,7 @@ class ValidateEmpty
      */
     public function handle(Request $request, Closure $next)
     {
+        $data = $request;
         if(empty($data)) {
             return response()->json(['error' => 'ID is Required'], 400);
         }
