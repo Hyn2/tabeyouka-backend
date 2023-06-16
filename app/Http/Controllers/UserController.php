@@ -62,8 +62,6 @@ class UserController extends Controller
         // 세션 리-지너레이션 (고정 공격 방지)
         $request->session()->regenerate();
 
-        // return response()->json(['message' => 'User logged in successfully', 'session_id' => $sessionId, 'session_data' => $sessionData]);
-        // return response()->json(['message' => 'User logged in successfully']);
         return response()->json(['message' => 'User logged in successfully'])
         ->withCookie(cookie(
             'laravel_session',
