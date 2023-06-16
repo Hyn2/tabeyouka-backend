@@ -110,7 +110,8 @@ Route::middleware(['web', 'api'])->group(function() {
   // Create Comment
   Route::post('/post/{post}/comments', [CommentController::class, 'store']);  // TODO: 로그인한 유저만 가능하게 변경
   // Update Comment
-  Route::match(['put', 'post'], '/post/{post}/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');  // TODO: 로그인한 유저만 가능하게 변경
+  Route::put('/post/{post}/comments/{comment}', [CommentController::class, 'update']);  // TODO: 로그인한 유저만 가능하게 변경
+  // Route::match(['put', 'post'], '/post/{post}/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');  // TODO: 로그인한 유저만 가능하게 변경
   // Delete Comment
   Route::delete('/post/{post}/comments/{comment}', [CommentController::class, 'destroy']);  // TODO: 로그인한 유저만 가능하게 변경
 });
