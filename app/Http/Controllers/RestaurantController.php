@@ -35,7 +35,7 @@ class RestaurantController extends Controller
     {
         $restaurant = Restaurant::select('id', 'title', 'address', 'menu_type', 'phone_number', 'total_points', 'total_votes', 'image')->where('id', $id)->firstOrFail();
 
-        $reviews = $restaurant->reviews()->where('restaurant_id', $restaurant->id)->select('id', 'author_id', 'restaurant_id', 'rating', 'review_text', 'image_file')->get();
+        $reviews = $restaurant->reviews()->where('restaurant_id', $restaurant->id)->select('id', 'author_id', 'nickname', 'restaurant_id', 'rating', 'review_text', 'image_file')->get();
 
         return response()->json([
             'restaurant' => $restaurant,
