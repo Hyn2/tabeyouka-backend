@@ -19,11 +19,14 @@ class CommentController extends Controller
     {
         $request->validate([
             'text' => 'required|string',
+            'author_id' => 'required',
+            'nickname' => 'required|string',
         ]);
 
         $comment = Comment::create([
             'text' => $request->text,
-            'author_id' => auth()->id(),
+            'author_id' => $request->author_id,
+            'nickname' => $request->nickname,
             'post_id' => $community,
         ]);
 
@@ -38,7 +41,7 @@ class CommentController extends Controller
 
         $comment = Comment::findOrFail($commentId);
         
-        if (auth()->id() !== $comment->author_id) {
+        if ($request->author_id !== $comment->author_id) {
             return response()->json(['error' => 'You are not authorized to update this comment.'], 403);
         }
 
@@ -53,7 +56,7 @@ class CommentController extends Controller
     {
         $comment = Comment::findOrFail($commentId);
 
-        if (auth()->id() !== $comment->author_id) {
+        if ($request->author_id !== $comment->author_id) {
             return response()->json(['error' => 'You are not authorized to delete this comment.'], 403);
         }
 
