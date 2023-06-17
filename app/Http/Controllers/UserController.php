@@ -41,13 +41,16 @@ class UserController extends Controller
      */
     public function login(Request $request)
     {
+        // 입력된 이메일과 비밀번호를 검증합니다.
         $validated = $request->validate([
             'email' => 'required',
             'password' => 'required',
         ]);
 
+        // // 검증된 이메일과 비밀번호를 가져옵니다.
         $credentials = $request->only('email', 'password');
         
+        // 인증을 시도하고, 실패 시 에러 메시지를 반환합니다.
         if (!Auth::attempt($credentials)) {
             return response()->json(['message' => 'Invalid login credentials'], Response::HTTP_UNAUTHORIZED);
         }
@@ -55,13 +58,16 @@ class UserController extends Controller
         // 세션을 생성하고 현재 사용자의 ID를 저장합니다.
         $request->session()->put('user_id', Auth::id());
 
+        // 사용자가 성공적으로 인증되면, 세션을 생성하고 현재 사용자의 ID를 세션에 저장합니다.
         $sessionId = $request->session()->getId();
 
+        // 사용자의 세션 데이터를 가져옵니다.
         $sessionData = $request->session()->all();
 
-        // 세션 리-지너레이션 (고정 공격 방지)
+        // 세션 고정 공격을 방지하기 위해 세션 ID를 재생성합니다.
         $request->session()->regenerate();
 
+        // 로그인 성공 메시지와 함께 세션 쿠키를 반환합니다.
         return response()->json(['message' => 'User logged in successfully'])
         ->withCookie(cookie(
             'laravel_session',
