@@ -47,6 +47,8 @@ class CommentController extends Controller
 
         $comment->update([
             'text' => $request->text,
+            'author_id' => 'required',
+            'nickname' => 'required|string',
         ]);
 
         return response()->json(['comment' => $comment]);
