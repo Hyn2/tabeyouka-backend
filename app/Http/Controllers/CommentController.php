@@ -20,15 +20,17 @@ class CommentController extends Controller
         $request->validate([
             'text' => 'required|string',
             'author_id' => 'required',
-            'nickname' => 'required|string',
+            'nickname' => 'required',
         ]);
 
-        $comment = Comment::create([
+        $comment = new Comment([
             'text' => $request->text,
             'author_id' => $request->author_id,
             'nickname' => $request->nickname,
             'post_id' => $community,
         ]);
+
+        $comment->save();
 
         return response()->json(['comment' => $comment], 201);
     }
