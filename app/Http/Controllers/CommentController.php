@@ -37,6 +37,7 @@ class CommentController extends Controller
     {
         $request->validate([
             'text' => 'required|string',
+            'author_id' => 'required',
         ]);
 
         $comment = Comment::findOrFail($commentId);
@@ -47,14 +48,12 @@ class CommentController extends Controller
 
         $comment->update([
             'text' => $request->text,
-            'author_id' => 'required',
-            'nickname' => 'required|string',
         ]);
 
         return response()->json(['comment' => $comment]);
     }
 
-    public function destroy($community, $commentId)
+    public function destroy(Request $request, $community, $commentId)
     {
         $comment = Comment::findOrFail($commentId);
 
