@@ -43,10 +43,6 @@ class CommentController extends Controller
         ]);
 
         $comment = Comment::findOrFail($commentId);
-        
-        if ($request->author_id !== $comment->author_id) {
-            return response()->json(['error' => 'You are not authorized to update this comment.'], 403);
-        }
 
         $comment->update([
             'text' => $request->text,
@@ -58,10 +54,6 @@ class CommentController extends Controller
     public function destroy(Request $request, $community, $commentId)
     {
         $comment = Comment::findOrFail($commentId);
-
-        if ($request->author_id !== $comment->author_id) {
-            return response()->json(['error' => 'You are not authorized to delete this comment.'], 403);
-        }
 
         $comment->delete();
 
